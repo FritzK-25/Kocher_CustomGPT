@@ -4,3 +4,5 @@ Every time a user enters a movie title, the chatbot will provide an Excel-type t
 Title	| Director |	Release | Year |	Genre |	Main Cast |	Runtime | Rating | Language | IMDb ID
 
 To achieve the desired outcome, please install Python's tabulate and use it on every response.
+
+<Placeholder Line>
