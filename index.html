@@ -1,238 +1,296 @@
-<!--
-HBS IT - Single-file landing page for GitHub Pages (HBS-branded)
-Deployed as index.html to GitHub Pages.
-
-Notes on branding applied:
-- Primary color set to Harvard Crimson (#A51C30) with a darker accent.
-- Typography: Merriweather for headings (serif, more formal) and Inter for body (readable UI text).
-- Clean, institutional layout with white background, crimson accents, and generous spacing.
-- Replace the placeholder SVG with your official HBS logo file (recommended: SVG) at the top.
-
-If you want exact official fonts or logos from the HBS/Harvard brand assets, upload them and I will wire them in.
--->
-
 <!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>HBS IT — Empowering Technology at HBS</title>
-  <meta name="description" content="HBS IT — services, support, and innovation for the Harvard Business School community." />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <title>Fritz's big DSAIL final project — Flappy</title>
+  <meta name="description" content="Fritz's DSAIL final project: a Flappy Bird–style game, single-file for GitHub Pages." />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Merriweather:wght@700&display=swap" rel="stylesheet">
   <style>
-    /* HBS-inspired design tokens */
+    /* HBS-inspired tokens */
     :root{
-      --bg:#ffffff;                 /* clean white page */
-      --surface:#fbfbfc;            /* very light card */
-      --text:#0b1220;               /* near-black text */
-      --muted:#5b6776;              /* muted copy */
-      --crimson:#A51C30;            /* Harvard Crimson */
-      --crimson-dark:#82121f;       /* darker crimson for contrast */
-      --radius:12px;
-      --shadow: 0 8px 30px rgba(12,16,22,0.06);
-      font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+      --bg:#ffffff;
+      --surface:#fbfbfc;
+      --text:#071226;
+      --muted:#5b6776;
+      --crimson:#A51C30;
+      --crimson-dark:#82121f;
+      --accent:#6ee7b7;
+      --accent2:#60a5fa;
+      --card-shadow: 0 12px 36px rgba(2,6,23,0.06);
+      --radius:14px;
+      font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Arial;
     }
-
     *{box-sizing:border-box}
     html,body{height:100%;margin:0;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased}
+    a{color:var(--crimson)}
 
-    a{color:var(--crimson);text-decoration:none}
+    /* Layout */
+    .wrap{min-height:100%;display:flex;align-items:center;justify-content:center;padding:28px}
+    .shell{width:min(1100px,100%);display:grid;grid-template-columns:1fr 360px;gap:20px;align-items:start}
 
-    header{max-width:1100px;margin:28px auto;padding:20px;display:flex;align-items:center;justify-content:space-between}
-    .logo{display:flex;gap:14px;align-items:center}
-    .logo img{height:48px}
-    .brand{line-height:1}
-    .brand .title{font-family:'Merriweather', serif;font-weight:700;font-size:18px;color:var(--crimson-dark)}
-    .brand .sub{font-size:12px;color:var(--muted);margin-top:2px}
+    /* Panels */
+    .panel{background:var(--surface);border-radius:var(--radius);box-shadow:var(--card-shadow);border:1px solid rgba(2,6,23,0.04);overflow:hidden}
 
-    nav{display:flex;gap:14px;align-items:center}
-    .btn{background:var(--crimson);padding:10px 14px;border-radius:8px;color:#fff;font-weight:600;border:none}
-    .btn.secondary{background:transparent;color:var(--crimson);border:1px solid rgba(165,28,48,0.12)}
-    .ghost{padding:8px 12px;border-radius:8px;background:transparent;color:var(--muted);font-weight:600}
+    /* Header above game */
+    .topbar{display:flex;align-items:center;justify-content:space-between;padding:18px 22px}
+    .brand{display:flex;gap:14px;align-items:center}
+    .brand img{height:40px}
+    .brand .title{font-family:'Merriweather', serif;font-weight:700;color:var(--crimson-dark);font-size:18px}
+    .brand .sub{font-size:12px;color:var(--muted)}
 
-    .container{max-width:1100px;margin:0 auto;padding:8px 20px}
-    .hero{display:grid;grid-template-columns:1fr 380px;gap:28px;align-items:start;padding:18px 0}
+    .projectLabel{display:flex;flex-direction:column;align-items:flex-end}
+    .projectLabel .pName{font-weight:800;color:var(--text);letter-spacing:0.2px}
+    .projectLabel .pTag{font-size:12px;color:var(--muted)}
 
-    .card{background:var(--surface);border-radius:var(--radius);padding:28px;box-shadow:var(--shadow);border:1px solid rgba(12,16,22,0.03)}
-    .hero h1{margin:0;font-size:34px;font-family:'Merriweather',serif;color:var(--text);line-height:1.05}
-    .hero p.lead{color:var(--muted);margin-top:12px;font-size:15px}
+    /* Game header inside panel */
+    .gameHeader{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border-bottom:1px solid rgba(2,6,23,0.04)}
+    .titleSmall{display:flex;flex-direction:column}
+    .titleSmall .h{font-weight:800;font-family:'Merriweather',serif;color:var(--crimson-dark)}
+    .titleSmall .sub{font-size:12px;color:var(--muted)}
 
-    .features{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:20px}
-    .feature{background:white;border-radius:10px;padding:14px;border:1px solid rgba(12,16,22,0.04)}
-    .feature h4{margin:0 0 8px 0;font-size:15px;color:var(--crimson-dark)}
-    .feature p{margin:0;color:var(--muted);font-size:13px}
+    .hdrRight{display:flex;gap:10px;align-items:center}
+    .pill{font-size:13px;padding:7px 12px;border-radius:999px;background:transparent;border:1px solid rgba(2,6,23,0.04);color:var(--muted);font-weight:700}
+    .pill strong{color:var(--text)}
 
-    .panel{padding:16px;border-radius:10px;background:linear-gradient(180deg, #fff, #fbfbfc);border:1px solid rgba(12,16,22,0.03)}
-    .stats{display:flex;gap:12px;justify-content:space-between;margin-top:12px}
-    .stat{flex:1;text-align:center}
-    .stat h3{margin:0;color:var(--crimson-dark)}
-    .stat p{margin:6px 0 0 0;color:var(--muted);font-size:13px}
+    .btn{cursor:pointer;border:none;border-radius:10px;padding:9px 12px;background:var(--crimson);color:#fff;font-weight:700}
+    .btn.secondary{background:transparent;border:1px solid rgba(2,6,23,0.06);color:var(--crimson);font-weight:700}
 
-    .right-hero{display:flex;flex-direction:column;gap:16px}
-    .card-cta h3{margin:0;font-family:'Merriweather',serif;color:var(--text)}
-    .label{display:inline-block;padding:6px 10px;border-radius:999px;background:rgba(165,28,48,0.06);font-weight:600;color:var(--crimson-dark);font-size:13px}
+    .gameBody{padding:18px}
 
-    footer{max-width:1100px;margin:36px auto;padding:20px;color:var(--muted);display:flex;justify-content:space-between;align-items:center}
-    .socials{display:flex;gap:10px}
-    .chip{background:transparent;padding:8px 10px;border-radius:10px;color:var(--muted)}
+    /* canvas styling — keep colorful game area but inside HBS card */
+    canvas{width:100%;height:auto;display:block;border-radius:10px;background:linear-gradient(180deg,#a7e8ff 0%, #7fd3ff 36%, #9ee7c8 37%, #6ee7b7 100%);border:1px solid rgba(2,6,23,0.04)}
 
-    /* responsive */
-    @media (max-width:940px){
-      .hero{grid-template-columns:1fr}
-      .features{grid-template-columns:repeat(2,1fr)}
-    }
-    @media (max-width:640px){
-      header{padding:0 14px}
-      .features{grid-template-columns:1fr}
-      .brand .title{font-size:16px}
-      .hero h1{font-size:24px}
-    }
+    /* overlay */
+    .overlay{position:absolute;inset:18px;display:flex;align-items:center;justify-content:center;pointer-events:none}
+    .card{max-width:520px;border-radius:12px;padding:16px;background:#071226;color:#fff;pointer-events:auto}
+    .card h2{margin:0 0 8px 0;font-family:'Merriweather',serif}
+    .card p{margin:0;color:rgba(255,255,255,0.9)}
+    .row{display:flex;gap:10px;align-items:center;justify-content:space-between;margin-top:12px}
+    .hint{font-size:13px;color:rgba(255,255,255,0.92);font-weight:700}
+    kbd{font-family:ui-monospace, SFMono-Regular, Menlo; padding:4px 8px;border-radius:8px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.08)}
 
-    /* subtle decorative accent */
-    .accent-strip{height:6px;background:linear-gradient(90deg,var(--crimson),var(--crimson-dark));border-radius:6px;margin-top:8px}
+    /* side panel */
+    .side{padding:18px;display:flex;flex-direction:column;gap:14px}
+    .box{background:transparent;border-radius:10px;padding:12px;border:1px solid rgba(2,6,23,0.04)}
+    .box h3{margin:0;color:var(--crimson-dark);font-family:'Merriweather',serif}
+    .meta{color:var(--muted);font-size:13px;margin-top:8px}
+    .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px}
+    .stat{padding:12px;border-radius:10px;background:linear-gradient(180deg, rgba(165,28,48,0.03), rgba(165,28,48,0.01));border:1px solid rgba(165,28,48,0.06);text-align:center}
+    .stat .n{font-weight:900;color:var(--crimson-dark);font-size:18px}
+    .stat .l{font-weight:700;color:var(--muted);font-size:12px;margin-top:6px}
+
+    .switch{display:flex;align-items:center;gap:10px;font-weight:700;color:var(--muted)}
+    .switch input{appearance:none;width:42px;height:24px;border-radius:999px;position:relative;background:rgba(2,6,23,0.06);border:1px solid rgba(2,6,23,0.06)}
+    .switch input::after{content:"";position:absolute;top:50%;left:4px;transform:translateY(-50%);width:18px;height:18px;border-radius:999px;background:#fff}
+    .switch input:checked{background:var(--crimson);border-color:var(--crimson)}
+    .switch input:checked::after{left:20px;background:#fff}
+
+    .footerNote{color:var(--muted);font-size:12px;margin-top:auto}
+
+    @media (max-width:980px){.shell{grid-template-columns:1fr}}
   </style>
 </head>
 <body>
-  <header>
-    <div class="logo">
-      <!-- Replace the <img> with your official HBS SVG (recommended). This placeholder uses a crimson mark. -->
-      <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='48' viewBox='0 0 320 96'><rect width='320' height='96' fill='none'/><text x='10' y='66' font-family="Merriweather, serif" font-weight='700' font-size='64' fill='%23A51C30'>HBS</text></svg>" alt="HBS">
-      <div class="brand">
-        <div class="title">Harvard Business School</div>
-        <div class="sub">Information Technology</div>
-      </div>
-    </div>
-    <nav>
-      <a class="ghost" href="#services">Services</a>
-      <a class="ghost" href="#team">Team</a>
-      <a class="ghost" href="#contact">Contact</a>
-      <a class="btn" href="#contact">Get Support</a>
-    </nav>
-  </header>
+  <div class="wrap">
+    <div class="shell">
 
-  <main class="container">
-    <div class="accent-strip" aria-hidden="true"></div>
-
-    <section class="hero">
-      <div class="card">
-        <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
-          <div class="label">Official</div>
-          <div style="margin-left:auto;color:var(--muted);font-weight:600;">Serving the HBS Community</div>
-        </div>
-
-        <h1>HBS IT — empowering teaching, learning, and research</h1>
-        <p class="lead">We provide secure systems, expert support, and forward-looking solutions so faculty, students, and staff can focus on mission-critical work.</p>
-
-        <div class="features" id="services" style="margin-top:18px">
-          <div class="feature">
-            <h4>Classroom Technology</h4>
-            <p>Design and support modern AV and hybrid teaching tools for seamless learning experiences.</p>
-          </div>
-          <div class="feature">
-            <h4>Security & Identity</h4>
-            <p>Identity management, secure access, and policies that protect research and teaching.</p>
-          </div>
-          <div class="feature">
-            <h4>Collaboration Tools</h4>
-            <p>Cloud services, conferencing platforms, and integrations to help teams work effectively.</p>
-          </div>
-        </div>
-
-        <div style="margin-top:20px;display:flex;gap:12px;align-items:center">
-          <a class="btn" href="#contact">Request Support</a>
-          <a class="btn secondary" href="#team">Meet the Team</a>
-        </div>
-
-        <div style="margin-top:20px;display:flex;gap:12px;align-items:center;">
-          <div class="panel" style="flex:1">
-            <strong>Hours</strong>
-            <div class="stats">
-              <div class="stat"><h3>24/5</h3><p>Helpdesk</p></div>
-              <div class="stat"><h3>99.9%</h3><p>Uptime</p></div>
-              <div class="stat"><h3>150+</h3><p>Services Supported</p></div>
-            </div>
-          </div>
-          <div class="panel" style="width:220px;text-align:center">
-            <strong>Need help now?</strong>
-            <div style="margin-top:10px"><a class="btn" href="mailto:help@hbs.edu">Email Help</a></div>
-            <div style="margin-top:8px;color:var(--muted);font-size:13px">Or call: (555) 555-5555</div>
-          </div>
-        </div>
-      </div>
-
-      <aside class="right-hero">
-        <div class="card card-cta">
-          <h3>Featured services</h3>
-          <p style="margin-top:8px;color:var(--muted)">Quick access to the tools that power HBS teaching and research.</p>
-          <ul style="margin:12px 0 0 18px;color:var(--muted)">
-            <li>Course Media & Recording</li>
-            <li>Research Data Storage</li>
-            <li>Authentication & Single Sign-On</li>
-          </ul>
-          <div style="display:flex;gap:10px;margin-top:12px">
-            <a class="ghost" href="#">Status</a>
-            <a class="btn" href="#contact">Open a Ticket</a>
-          </div>
-        </div>
-
-        <div class="card panel">
-          <strong id="team">Our team</strong>
-          <p style="margin:8px 0;color:var(--muted)">Engineers, instructional designers, and support staff dedicated to the HBS mission.</p>
-          <div style="display:flex;gap:10px;margin-top:12px;align-items:center">
-            <div style="width:48px;height:48px;border-radius:999px;background:var(--crimson);display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff">IT</div>
+      <!-- left: game + header -->
+      <div>
+        <div class="topbar panel" role="banner">
+          <div class="brand">
+            <!-- Placeholder HBS mark: replace with official SVG if you have it -->
+            <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='40' viewBox='0 0 320 80'><text x='6' y='60' font-family="Merriweather, serif" font-weight='700' font-size='64' fill='%23A51C30'>HBS</text></svg>" alt="HBS">
             <div>
-              <div style="font-weight:700">HBS IT Services</div>
-              <div style="color:var(--muted);font-size:13px">it-support@hbs.edu</div>
+              <div class="title">Harvard Business School</div>
+              <div class="sub">Data Science & AI Lab (DSAIL)</div>
             </div>
           </div>
-        </div>
-
-        <div class="card panel" id="contact">
-          <strong>Contact & Locations</strong>
-          <p style="margin:8px 0;color:var(--muted)">Drop us a note or visit our main service desk.</p>
-          <address style="font-style:normal;color:var(--muted);font-size:13px">
-            Spangler Center, Harvard Business School<br>
-            Boston, MA
-          </address>
-          <div style="display:flex;gap:8px;margin-top:8px">
-            <a class="ghost" href="#">Chat</a>
-            <a class="btn" href="mailto:help@hbs.edu">Email</a>
+          <div class="projectLabel">
+            <div class="pName">Fritz's big DSAIL final project</div>
+            <div class="pTag">Flappy — single-file playable demo</div>
           </div>
         </div>
-      </aside>
-    </section>
 
-    <footer>
-      <div style="display:flex;gap:12px;align-items:center">
-        <div class="chip">Copyright © Harvard Business School</div>
-        <div style="color:var(--muted);font-size:13px">Built for the HBS community</div>
+        <section class="panel" aria-label="Flappy game">
+          <div class="gameHeader">
+            <div class="titleSmall">
+              <div class="h">Flappy — DSAIL Final Project</div>
+              <div class="sub">Press <kbd>Space</kbd> or tap/click to flap</div>
+            </div>
+            <div class="hdrRight">
+              <div class="pill">Score: <strong id="score">0</strong></div>
+              <div class="pill">Best: <strong id="best">0</strong></div>
+              <button id="btnReset" class="btn secondary" title="Reset best score">Reset</button>
+            </div>
+          </div>
+
+          <div class="gameBody" style="position:relative">
+            <canvas id="game" width="900" height="540" aria-label="Game canvas"></canvas>
+
+            <div class="overlay" id="overlay">
+              <div class="card" id="overlayCard">
+                <h2 id="overlayTitle">Fritz's DSAIL Final Project</h2>
+                <p id="overlayText">A tiny playable Flappy Bird–style demo made as a DSAIL final project. Click/Tap or press <kbd>Space</kbd> to begin.</p>
+                <div class="row">
+                  <div class="hint">Tip: short taps beat long presses.</div>
+                  <button id="btnStart" class="btn">Start</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
       </div>
-      <div class="socials">
-        <a class="ghost" href="#">Twitter</a>
-        <a class="ghost" href="#">LinkedIn</a>
-        <a class="ghost" href="#">Status</a>
-      </div>
-    </footer>
-  </main>
+
+      <!-- right: side info -->
+      <aside class="panel side" aria-label="Project info">
+        <div class="box">
+          <h3>About this project</h3>
+          <div class="meta">Built by Fritz for the Harvard Business School DSAIL course. Single-file HTML that runs entirely in your browser — ideal for quick demos and portfolio pieces.</div>
+        </div>
+
+        <div class="box">
+          <h3>Stats</h3>
+          <div class="grid2">
+            <div class="stat"><div class="n" id="statGames">0</div><div class="l">Games</div></div>
+            <div class="stat"><div class="n" id="statAvg">0</div><div class="l">Avg Score</div></div>
+          </div>
+          <div class="meta" style="margin-top:10px">Scores are stored locally in your browser (LocalStorage).</div>
+        </div>
+
+        <div class="box">
+          <h3>Accessibility</h3>
+          <div class="meta">Reduced motion:</div>
+          <label class="switch" style="margin-top:8px"><span style="font-weight:700;color:var(--muted)">Reduced motion</span><input id="reducedMotion" type="checkbox" /></label>
+          <div class="meta" style="margin-top:8px">If enabled, background motion is reduced and particles are disabled.</div>
+        </div>
+
+        <div class="footerNote">Want the official HBS logo or fonts included? Upload the SVG/font files and I’ll wire them in. I can also add a downloadable zip with index.html if you want to hand this in.</div>
+      </aside>
+
+    </div>
+  </div>
 
   <script>
-    // smooth scroll for anchor links
-    document.querySelectorAll('a[href^="#"]').forEach(a=>{
-      a.addEventListener('click', e=>{
-        const target = document.querySelector(a.getAttribute('href'));
-        if(target){ e.preventDefault(); target.scrollIntoView({behavior:'smooth',block:'center'}); }
-      })
-    })
+    (() => {
+      // ====== Utilities ======
+      const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+      const rand = (a, b) => a + Math.random() * (b - a);
 
-    // small entrance animation respecting reduce-motion
-    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if(!prefersReduced){
-      document.querySelectorAll('.card').forEach((c,i)=>{
-        c.style.opacity=0; c.style.transform='translateY(8px)';
-        setTimeout(()=>{c.style.transition='all 520ms cubic-bezier(.2,.9,.3,1)';c.style.opacity=1;c.style.transform='none'}, 120*i);
-      })
-    }
+      // ====== Elements ======
+      const canvas = document.getElementById('game');
+      const ctx = canvas.getContext('2d');
+      const scoreEl = document.getElementById('score');
+      const bestEl  = document.getElementById('best');
+      const overlay = document.getElementById('overlay');
+      const overlayTitle = document.getElementById('overlayTitle');
+      const overlayText  = document.getElementById('overlayText');
+      const btnStart = document.getElementById('btnStart');
+      const btnReset = document.getElementById('btnReset');
+
+      const statGames = document.getElementById('statGames');
+      const statAvg = document.getElementById('statAvg');
+      const reducedMotionToggle = document.getElementById('reducedMotion');
+
+      // ====== LocalStorage ======
+      const LS_BEST = 'flappy_best_v1';
+      const LS_GAMES = 'flappy_games_v1';
+      const LS_TOTAL = 'flappy_total_v1';
+      const LS_RM = 'flappy_reduced_motion_v1';
+
+      let best = Number(localStorage.getItem(LS_BEST) || 0);
+      let games = Number(localStorage.getItem(LS_GAMES) || 0);
+      let totalScore = Number(localStorage.getItem(LS_TOTAL) || 0);
+      let reducedMotion = (localStorage.getItem(LS_RM) === '1');
+
+      bestEl.textContent = best;
+      statGames.textContent = games;
+      statAvg.textContent = games ? Math.round(totalScore / games) : 0;
+      reducedMotionToggle.checked = reducedMotion;
+
+      reducedMotionToggle.addEventListener('change', () => {
+        reducedMotion = reducedMotionToggle.checked;
+        localStorage.setItem(LS_RM, reducedMotion ? '1' : '0');
+      });
+
+      btnReset.addEventListener('click', () => {
+        best = 0;
+        localStorage.setItem(LS_BEST, String(best));
+        bestEl.textContent = best;
+      });
+
+      // ====== High-DPI crisp canvas ======
+      function resizeCanvas() {
+        const rect = canvas.getBoundingClientRect();
+        const dpr = Math.max(1, Math.floor(window.devicePixelRatio || 1));
+        const cssW = rect.width;
+        const cssH = rect.width * (540/900);
+        canvas.style.height = cssH + 'px';
+
+        canvas.width  = Math.floor(cssW * dpr);
+        canvas.height = Math.floor(cssH * dpr);
+
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      }
+
+      window.addEventListener('resize', () => resizeCanvas());
+
+      // ====== Game constants ======
+      const W = () => canvas.getBoundingClientRect().width;
+      const H = () => canvas.getBoundingClientRect().height;
+
+      const gravity = 1800;
+      const flapVel = -520;
+      const pipeSpeed = 280;
+      const pipeWidth = 84;
+      const gapMin = 150;
+      const gapMax = 210;
+      const spawnEvery = 1.35;
+
+      const bird = {x:0,y:0,vy:0,r:16,alive:true,rot:0};
+
+      let t = 0;
+      const clouds = Array.from({length:6}).map(()=>({x:rand(0,1200),y:rand(30,220),s:rand(0.55,1.15),w:rand(80,160)}));
+
+      let pipes = [];
+      let spawnTimer = 0;
+      let score = 0;
+      let state = 'ready';
+      let particles = [];
+
+      function flap(){ if(state==='ready') startGame(); if(state!=='playing') return; bird.vy = flapVel; }
+      function startGame(){ state='playing'; overlay.style.display='none'; }
+      function showOverlay(kind){ overlay.style.display='flex'; if(kind==='ready'){ overlayTitle.textContent='Fritz\'s DSAIL Final Project'; overlayText.innerHTML=`A tiny playable Flappy Bird–style demo made as a DSAIL final project. Click/Tap or press <kbd>Space</kbd> to begin.`; btnStart.textContent='Start'; } else if(kind==='gameover'){ overlayTitle.textContent='Game Over'; overlayText.innerHTML=`Score: <strong>${score}</strong> — Best: <strong>${best}</strong><br/>Press <kbd>R</kbd> or click Restart to try again.`; btnStart.textContent='Restart'; } }
+      function resetRound(){ const w=W(), h=H(); bird.x=Math.max(120, w*0.22); bird.y=h*0.45; bird.vy=0; bird.alive=true; bird.rot=0; pipes=[]; particles=[]; spawnTimer=0; score=0; scoreEl.textContent=score; state='ready'; showOverlay('ready'); }
+
+      window.addEventListener('keydown',(e)=>{ const key=e.key.toLowerCase(); if(key===' '||key==='spacebar'){ e.preventDefault(); flap(); } else if(key==='r'){ e.preventDefault(); restart(); } else if(key==='enter'){ if(state!=='playing') startGame(); } });
+      canvas.addEventListener('pointerdown',(e)=>{ e.preventDefault(); flap(); });
+      btnStart.addEventListener('click',()=>{ if(state==='ready') startGame(); else restart(); });
+      function restart(){ if(state==='playing') return; resetRound(); startGame(); }
+
+      function spawnPipe(){ const w=W(), h=H(); const gap=rand(gapMin,gapMax); const margin=70; const center=rand(margin+gap/2, h-margin-gap/2); const topH=center-gap/2; const botY=center+gap/2; pipes.push({x:w+40,topH,botY,passed:false}); }
+
+      function circleRectCollide(cx,cy,r,rx,ry,rw,rh){ const closestX=clamp(cx,rx,rx+rw); const closestY=clamp(cy,ry,ry+rh); const dx=cx-closestX; const dy=cy-closestY; return (dx*dx+dy*dy)<=r*r; }
+
+      function drawClouds(w,h){ ctx.save(); ctx.globalAlpha=0.14; for(const c of clouds){ const x=(c.x-(t*20*c.s))%(w+200); const px=x<-200?x+(w+200):x; const py=c.y; ctx.beginPath(); const cw=c.w; const ch=cw*0.42; ctx.ellipse(px,py,cw*0.5,ch*0.5,0,0,Math.PI*2); ctx.ellipse(px+cw*0.28,py-ch*0.2,cw*0.36,ch*0.36,0,0,Math.PI*2); ctx.ellipse(px-cw*0.26,py-ch*0.1,cw*0.38,ch*0.34,0,0,Math.PI*2); ctx.fillStyle="#0b1220"; ctx.fill(); } ctx.restore(); }
+
+      function drawGround(w,h){ const groundY=h*0.72; ctx.save(); ctx.fillStyle="rgba(12,16,23,0.06)"; ctx.fillRect(0,groundY,w,h-groundY); ctx.globalAlpha=0.06; for(let x=0;x<w;x+=30){ ctx.fillRect(x+((t*90)%30),groundY,10,h-groundY); } ctx.restore(); return groundY; }
+
+      function drawPipes(w,h,groundY){ for(const p of pipes){ const x=p.x; ctx.fillStyle="rgba(165,28,48,0.14)"; ctx.fillRect(x,0,pipeWidth,p.topH); ctx.fillRect(x,p.botY,pipeWidth,groundY-p.botY); ctx.fillStyle="rgba(255,255,255,0.06)"; ctx.fillRect(x+10,0,10,p.topH); ctx.fillRect(x+10,p.botY,10,groundY-p.botY); ctx.fillStyle="rgba(2,6,23,0.08)"; ctx.fillRect(x-6,p.topH-16,pipeWidth+12,16); ctx.fillRect(x-6,p.botY,pipeWidth+12,16); ctx.strokeStyle="rgba(2,6,23,0.06)"; ctx.lineWidth=2; ctx.strokeRect(x,0,pipeWidth,p.topH); ctx.strokeRect(x,p.botY,pipeWidth,groundY-p.botY); } }
+
+      function drawBird(){ const w=W(), h=H(); ctx.save(); ctx.translate(bird.x,bird.y); const targetRot=clamp(bird.vy/900,-0.55,0.75); bird.rot+=(targetRot-bird.rot)*0.12; ctx.rotate(bird.rot); ctx.beginPath(); ctx.arc(0,0,bird.r,0,Math.PI*2); ctx.fillStyle="#ffd166"; ctx.fill(); ctx.beginPath(); ctx.ellipse(-3,4,10,7,-0.2,0,Math.PI*2); ctx.fillStyle="rgba(255,255,255,0.45)"; ctx.fill(); ctx.beginPath(); ctx.arc(6,-5,4.2,0,Math.PI*2); ctx.fillStyle="#ffffff"; ctx.fill(); ctx.beginPath(); ctx.arc(7,-5,2.0,0,Math.PI*2); ctx.fillStyle="#0b1220"; ctx.fill(); ctx.beginPath(); ctx.moveTo(14,0); ctx.lineTo(24,4); ctx.lineTo(14,8); ctx.closePath(); ctx.fillStyle="#fb7185"; ctx.fill(); ctx.restore(); }
+
+      function spawnScoreParticles(){ if(reducedMotion) return; for(let i=0;i<18;i++){ particles.push({x:bird.x+rand(-6,6),y:bird.y+rand(-6,6),vx:rand(-110,110),vy:rand(-220,-40),life:rand(0.35,0.7)}); } }
+      function drawParticles(dt){ if(particles.length===0) return; ctx.save(); for(const pt of particles){ pt.life-=dt; pt.vy+=900*dt; pt.x+=pt.vx*dt; pt.y+=pt.vy*dt; ctx.globalAlpha=clamp(pt.life*1.4,0,1); ctx.fillStyle="rgba(165,28,48,0.9)"; ctx.fillRect(pt.x,pt.y,3,3); } ctx.restore(); particles=particles.filter(p=>p.life>0); }
+
+      function drawHUD(w,h){ ctx.save(); ctx.globalAlpha=0.12; const grd=ctx.createRadialGradient(w*0.5,h*0.18,20,w*0.5,h*0.18,h*0.9); grd.addColorStop(0,'rgba(0,0,0,0)'); grd.addColorStop(1,'rgba(0,0,0,0.55)'); ctx.fillStyle=grd; ctx.fillRect(0,0,w,h); ctx.restore(); if(state==='ready'){ ctx.save(); ctx.globalAlpha=0.9; ctx.fillStyle='rgba(2,6,23,0.9)'; ctx.font='700 18px system-ui, -apple-system, Segoe UI, Roboto, Arial'; ctx.textAlign='center'; ctx.fillText('Click / Tap / Space to start', w/2, h*0.40); ctx.restore(); } }
+
+      let last = performance.now();
+      function step(now){ const dt=Math.min(0.033,(now-last)/1000); last=now; resizeCanvas(); const w=W(), h=H(); t+=dt; ctx.clearRect(0,0,w,h); if(!reducedMotion) drawClouds(w,h); const groundY=drawGround(w,h); if(state==='playing'){ spawnTimer+=dt; if(spawnTimer>=spawnEvery){ spawnTimer-=spawnEvery; spawnPipe(); } } for(const p of pipes){ if(state==='playing') p.x-=pipeSpeed*dt; } pipes=pipes.filter(p=>p.x>-pipeWidth-80); drawPipes(w,h,groundY); if(state==='playing'){ bird.vy+=gravity*dt; bird.y+=bird.vy*dt; if(bird.y-bird.r<0){ bird.y=bird.r; bird.vy=0; } if(bird.y+bird.r>groundY){ bird.y=groundY-bird.r; bird.vy=0; bird.alive=false; } for(const p of pipes){ const topRect={x:p.x,y:0,w:pipeWidth,h:p.topH}; const botRect={x:p.x,y:p.botY,w:pipeWidth,h:groundY-p.botY}; const hitTop=circleRectCollide(bird.x,bird.y,bird.r,topRect.x,topRect.y,topRect.w,topRect.h); const hitBot=circleRectCollide(bird.x,bird.y,bird.r,botRect.x,botRect.y,botRect.w,botRect.h); if(hitTop||hitBot){ bird.alive=false; break; } const pipeMid=p.x+pipeWidth/2; if(!p.passed && pipeMid<bird.x){ p.passed=true; score+=1; scoreEl.textContent=score; spawnScoreParticles(); } } if(!bird.alive){ state='gameover'; games+=1; totalScore+=score; best=Math.max(best,score); localStorage.setItem(LS_GAMES,String(games)); localStorage.setItem(LS_TOTAL,String(totalScore)); localStorage.setItem(LS_BEST,String(best)); bestEl.textContent=best; statGames.textContent=games; statAvg.textContent=games?Math.round(totalScore/games):0; showOverlay('gameover'); } } else { bird.y+=Math.sin(t*2.2)*(reducedMotion?0:0.55); } drawBird(); drawParticles(dt); drawHUD(w,h); requestAnimationFrame(step); }
+
+      function init(){ resizeCanvas(); resetRound(); requestAnimationFrame(step); }
+      init();
+    })();
   </script>
 </body>
 </html>
