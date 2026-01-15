@@ -1,0 +1,238 @@
+<!--
+HBS IT - Single-file landing page for GitHub Pages (HBS-branded)
+Deployed as index.html to GitHub Pages.
+
+Notes on branding applied:
+- Primary color set to Harvard Crimson (#A51C30) with a darker accent.
+- Typography: Merriweather for headings (serif, more formal) and Inter for body (readable UI text).
+- Clean, institutional layout with white background, crimson accents, and generous spacing.
+- Replace the placeholder SVG with your official HBS logo file (recommended: SVG) at the top.
+
+If you want exact official fonts or logos from the HBS/Harvard brand assets, upload them and I will wire them in.
+-->
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>HBS IT — Empowering Technology at HBS</title>
+  <meta name="description" content="HBS IT — services, support, and innovation for the Harvard Business School community." />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Merriweather:wght@700&display=swap" rel="stylesheet">
+  <style>
+    /* HBS-inspired design tokens */
+    :root{
+      --bg:#ffffff;                 /* clean white page */
+      --surface:#fbfbfc;            /* very light card */
+      --text:#0b1220;               /* near-black text */
+      --muted:#5b6776;              /* muted copy */
+      --crimson:#A51C30;            /* Harvard Crimson */
+      --crimson-dark:#82121f;       /* darker crimson for contrast */
+      --radius:12px;
+      --shadow: 0 8px 30px rgba(12,16,22,0.06);
+      font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased}
+
+    a{color:var(--crimson);text-decoration:none}
+
+    header{max-width:1100px;margin:28px auto;padding:20px;display:flex;align-items:center;justify-content:space-between}
+    .logo{display:flex;gap:14px;align-items:center}
+    .logo img{height:48px}
+    .brand{line-height:1}
+    .brand .title{font-family:'Merriweather', serif;font-weight:700;font-size:18px;color:var(--crimson-dark)}
+    .brand .sub{font-size:12px;color:var(--muted);margin-top:2px}
+
+    nav{display:flex;gap:14px;align-items:center}
+    .btn{background:var(--crimson);padding:10px 14px;border-radius:8px;color:#fff;font-weight:600;border:none}
+    .btn.secondary{background:transparent;color:var(--crimson);border:1px solid rgba(165,28,48,0.12)}
+    .ghost{padding:8px 12px;border-radius:8px;background:transparent;color:var(--muted);font-weight:600}
+
+    .container{max-width:1100px;margin:0 auto;padding:8px 20px}
+    .hero{display:grid;grid-template-columns:1fr 380px;gap:28px;align-items:start;padding:18px 0}
+
+    .card{background:var(--surface);border-radius:var(--radius);padding:28px;box-shadow:var(--shadow);border:1px solid rgba(12,16,22,0.03)}
+    .hero h1{margin:0;font-size:34px;font-family:'Merriweather',serif;color:var(--text);line-height:1.05}
+    .hero p.lead{color:var(--muted);margin-top:12px;font-size:15px}
+
+    .features{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:20px}
+    .feature{background:white;border-radius:10px;padding:14px;border:1px solid rgba(12,16,22,0.04)}
+    .feature h4{margin:0 0 8px 0;font-size:15px;color:var(--crimson-dark)}
+    .feature p{margin:0;color:var(--muted);font-size:13px}
+
+    .panel{padding:16px;border-radius:10px;background:linear-gradient(180deg, #fff, #fbfbfc);border:1px solid rgba(12,16,22,0.03)}
+    .stats{display:flex;gap:12px;justify-content:space-between;margin-top:12px}
+    .stat{flex:1;text-align:center}
+    .stat h3{margin:0;color:var(--crimson-dark)}
+    .stat p{margin:6px 0 0 0;color:var(--muted);font-size:13px}
+
+    .right-hero{display:flex;flex-direction:column;gap:16px}
+    .card-cta h3{margin:0;font-family:'Merriweather',serif;color:var(--text)}
+    .label{display:inline-block;padding:6px 10px;border-radius:999px;background:rgba(165,28,48,0.06);font-weight:600;color:var(--crimson-dark);font-size:13px}
+
+    footer{max-width:1100px;margin:36px auto;padding:20px;color:var(--muted);display:flex;justify-content:space-between;align-items:center}
+    .socials{display:flex;gap:10px}
+    .chip{background:transparent;padding:8px 10px;border-radius:10px;color:var(--muted)}
+
+    /* responsive */
+    @media (max-width:940px){
+      .hero{grid-template-columns:1fr}
+      .features{grid-template-columns:repeat(2,1fr)}
+    }
+    @media (max-width:640px){
+      header{padding:0 14px}
+      .features{grid-template-columns:1fr}
+      .brand .title{font-size:16px}
+      .hero h1{font-size:24px}
+    }
+
+    /* subtle decorative accent */
+    .accent-strip{height:6px;background:linear-gradient(90deg,var(--crimson),var(--crimson-dark));border-radius:6px;margin-top:8px}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <!-- Replace the <img> with your official HBS SVG (recommended). This placeholder uses a crimson mark. -->
+      <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='48' viewBox='0 0 320 96'><rect width='320' height='96' fill='none'/><text x='10' y='66' font-family="Merriweather, serif" font-weight='700' font-size='64' fill='%23A51C30'>HBS</text></svg>" alt="HBS">
+      <div class="brand">
+        <div class="title">Harvard Business School</div>
+        <div class="sub">Information Technology</div>
+      </div>
+    </div>
+    <nav>
+      <a class="ghost" href="#services">Services</a>
+      <a class="ghost" href="#team">Team</a>
+      <a class="ghost" href="#contact">Contact</a>
+      <a class="btn" href="#contact">Get Support</a>
+    </nav>
+  </header>
+
+  <main class="container">
+    <div class="accent-strip" aria-hidden="true"></div>
+
+    <section class="hero">
+      <div class="card">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
+          <div class="label">Official</div>
+          <div style="margin-left:auto;color:var(--muted);font-weight:600;">Serving the HBS Community</div>
+        </div>
+
+        <h1>HBS IT — empowering teaching, learning, and research</h1>
+        <p class="lead">We provide secure systems, expert support, and forward-looking solutions so faculty, students, and staff can focus on mission-critical work.</p>
+
+        <div class="features" id="services" style="margin-top:18px">
+          <div class="feature">
+            <h4>Classroom Technology</h4>
+            <p>Design and support modern AV and hybrid teaching tools for seamless learning experiences.</p>
+          </div>
+          <div class="feature">
+            <h4>Security & Identity</h4>
+            <p>Identity management, secure access, and policies that protect research and teaching.</p>
+          </div>
+          <div class="feature">
+            <h4>Collaboration Tools</h4>
+            <p>Cloud services, conferencing platforms, and integrations to help teams work effectively.</p>
+          </div>
+        </div>
+
+        <div style="margin-top:20px;display:flex;gap:12px;align-items:center">
+          <a class="btn" href="#contact">Request Support</a>
+          <a class="btn secondary" href="#team">Meet the Team</a>
+        </div>
+
+        <div style="margin-top:20px;display:flex;gap:12px;align-items:center;">
+          <div class="panel" style="flex:1">
+            <strong>Hours</strong>
+            <div class="stats">
+              <div class="stat"><h3>24/5</h3><p>Helpdesk</p></div>
+              <div class="stat"><h3>99.9%</h3><p>Uptime</p></div>
+              <div class="stat"><h3>150+</h3><p>Services Supported</p></div>
+            </div>
+          </div>
+          <div class="panel" style="width:220px;text-align:center">
+            <strong>Need help now?</strong>
+            <div style="margin-top:10px"><a class="btn" href="mailto:help@hbs.edu">Email Help</a></div>
+            <div style="margin-top:8px;color:var(--muted);font-size:13px">Or call: (555) 555-5555</div>
+          </div>
+        </div>
+      </div>
+
+      <aside class="right-hero">
+        <div class="card card-cta">
+          <h3>Featured services</h3>
+          <p style="margin-top:8px;color:var(--muted)">Quick access to the tools that power HBS teaching and research.</p>
+          <ul style="margin:12px 0 0 18px;color:var(--muted)">
+            <li>Course Media & Recording</li>
+            <li>Research Data Storage</li>
+            <li>Authentication & Single Sign-On</li>
+          </ul>
+          <div style="display:flex;gap:10px;margin-top:12px">
+            <a class="ghost" href="#">Status</a>
+            <a class="btn" href="#contact">Open a Ticket</a>
+          </div>
+        </div>
+
+        <div class="card panel">
+          <strong id="team">Our team</strong>
+          <p style="margin:8px 0;color:var(--muted)">Engineers, instructional designers, and support staff dedicated to the HBS mission.</p>
+          <div style="display:flex;gap:10px;margin-top:12px;align-items:center">
+            <div style="width:48px;height:48px;border-radius:999px;background:var(--crimson);display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff">IT</div>
+            <div>
+              <div style="font-weight:700">HBS IT Services</div>
+              <div style="color:var(--muted);font-size:13px">it-support@hbs.edu</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card panel" id="contact">
+          <strong>Contact & Locations</strong>
+          <p style="margin:8px 0;color:var(--muted)">Drop us a note or visit our main service desk.</p>
+          <address style="font-style:normal;color:var(--muted);font-size:13px">
+            Spangler Center, Harvard Business School<br>
+            Boston, MA
+          </address>
+          <div style="display:flex;gap:8px;margin-top:8px">
+            <a class="ghost" href="#">Chat</a>
+            <a class="btn" href="mailto:help@hbs.edu">Email</a>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <footer>
+      <div style="display:flex;gap:12px;align-items:center">
+        <div class="chip">Copyright © Harvard Business School</div>
+        <div style="color:var(--muted);font-size:13px">Built for the HBS community</div>
+      </div>
+      <div class="socials">
+        <a class="ghost" href="#">Twitter</a>
+        <a class="ghost" href="#">LinkedIn</a>
+        <a class="ghost" href="#">Status</a>
+      </div>
+    </footer>
+  </main>
+
+  <script>
+    // smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(a=>{
+      a.addEventListener('click', e=>{
+        const target = document.querySelector(a.getAttribute('href'));
+        if(target){ e.preventDefault(); target.scrollIntoView({behavior:'smooth',block:'center'}); }
+      })
+    })
+
+    // small entrance animation respecting reduce-motion
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if(!prefersReduced){
+      document.querySelectorAll('.card').forEach((c,i)=>{
+        c.style.opacity=0; c.style.transform='translateY(8px)';
+        setTimeout(()=>{c.style.transition='all 520ms cubic-bezier(.2,.9,.3,1)';c.style.opacity=1;c.style.transform='none'}, 120*i);
+      })
+    }
+  </script>
+</body>
+</html>
