@@ -320,8 +320,9 @@
     const UI = {
       padding: 22,
       headerH: 52,
+      topStripH: 34,
       gutter: 22,
-      panelW: 280,
+      panelW: 352,
       labelW: 34,
     };
 
@@ -441,14 +442,14 @@
       const H = canvas.height;
 
       const boardAreaW = W - UI.padding*2;
-      const boardAreaH = H - UI.padding*2;
+      const boardAreaH = H - UI.padding*2 - UI.topStripH - 10;
 
       // During placement: show one board + bank panel area on the right.
       if(state.phase === 'placement'){
         const boardW = Math.min(boardAreaH, boardAreaW - UI.panelW - UI.gutter);
         const boardH = boardW;
         const myX = UI.padding;
-        const myY = UI.padding + 6;
+        const myY = UI.padding + UI.topStripH + 10;
 
         state.rects.myBoard = {x: myX, y: myY, w: boardW, h: boardH};
         state.rects.opBoard = null;
@@ -483,7 +484,7 @@
         const boardW = singleW;
         const boardH = singleW;
         const myX = UI.padding;
-        const myY = UI.padding + 6;
+        const myY = UI.padding + UI.topStripH + 10;
         const opX = myX + boardW + UI.gutter;
         const opY = myY;
 
@@ -552,9 +553,9 @@
 
     function drawTopStrip(){
       const x = UI.padding;
-      const y = UI.padding - 2;
+      const y = UI.padding;
       const w = canvas.width - UI.padding*2;
-      const h = 34;
+      const h = UI.topStripH;
       roundRect(x,y,w,h,14);
       ctx.fillStyle = 'rgba(255,255,255,.80)';
       ctx.fill();
@@ -696,7 +697,7 @@
         '• Right-click to rotate',
         '• Place all ships, then click Ready',
       ];
-      let y = rect.y + 66;
+      let y = rect.y + 80;
       for(const line of lines){
         ctx.fillText(line, rect.x+18, y);
         y += 18;
