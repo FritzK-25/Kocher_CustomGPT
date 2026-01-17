@@ -210,6 +210,198 @@
       color: rgba(26,26,26,.65);
     }
 
+    .cryptoSection{
+      margin-top: 28px;
+      padding: 22px 18px 36px;
+      background:
+        radial-gradient(900px 420px at 15% 0%, rgba(164,16,52,.06), transparent 60%),
+        radial-gradient(900px 420px at 85% 20%, rgba(59,40,131,.06), transparent 60%);
+    }
+
+    .cryptoHeader{
+      display:flex;
+      align-items:flex-end;
+      justify-content:space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .cryptoTitle{
+      font-family: Lora, Georgia, serif;
+      font-size: 22px;
+      font-weight: 700;
+      margin: 0;
+    }
+
+    .cryptoSubtitle{
+      font-size: 13px;
+      color: rgba(26,26,26,.70);
+      margin: 4px 0 0;
+    }
+
+    .cryptoGrid{
+      display:grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .cryptoCard{
+      background: rgba(255,255,255,.92);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 14px 16px;
+      box-shadow: var(--shadow);
+    }
+
+    .cryptoCard h3{
+      margin: 0 0 8px;
+      font-family: Lora, Georgia, serif;
+      font-size: 16px;
+    }
+
+    .cryptoCard p{
+      margin: 0 0 10px;
+      font-size: 13px;
+      color: rgba(26,26,26,.78);
+    }
+
+    .cryptoList{
+      margin: 0;
+      padding-left: 18px;
+      font-size: 13px;
+      color: rgba(26,26,26,.78);
+      display:grid;
+      gap: 6px;
+    }
+
+    .cryptoFlow{
+      display:grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .cryptoStep{
+      border: 1px dashed rgba(26,26,26,.18);
+      border-radius: 14px;
+      padding: 10px 12px;
+      background: rgba(246,246,247,.9);
+    }
+
+    .cryptoStep strong{
+      display:block;
+      font-size: 12px;
+      letter-spacing:.08em;
+      text-transform: uppercase;
+      color: var(--crimson);
+      margin-bottom: 6px;
+    }
+
+    .cryptoMono{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 12px;
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 10px 12px;
+      color: rgba(26,26,26,.85);
+      line-height: 1.4;
+    }
+
+    .cryptoMatrix{
+      margin-top: 18px;
+      background: rgba(255,255,255,.92);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 16px;
+      box-shadow: var(--shadow);
+    }
+
+    .cryptoMatrixHeader{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .cryptoMatrixTitle{
+      font-family: Lora, Georgia, serif;
+      font-size: 18px;
+      margin: 0;
+    }
+
+    .cryptoMatrixSub{
+      font-size: 12px;
+      color: rgba(26,26,26,.70);
+      margin-top: 4px;
+    }
+
+    .cryptoControls{
+      display:flex;
+      flex-wrap:wrap;
+      gap: 8px;
+      justify-content:flex-end;
+    }
+
+    .cryptoMatrixBody{
+      display:grid;
+      grid-template-columns: auto 1fr;
+      gap: 14px;
+      align-items:start;
+    }
+
+    .cryptoGridTable{
+      display:grid;
+      grid-template-columns: repeat(10, minmax(0, 1fr));
+      gap: 2px;
+      width: min(100%, 360px);
+      padding: 6px;
+      background: rgba(246,246,247,.9);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+    }
+
+    .cryptoCell{
+      height: 26px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size: 10px;
+      background: white;
+      border: 1px solid rgba(26,26,26,.08);
+      border-radius: 6px;
+      color: rgba(26,26,26,.82);
+      user-select:none;
+      cursor:pointer;
+    }
+
+    .cryptoCell.ship{
+      background: rgba(164,16,52,.12);
+      color: var(--crimson);
+      font-weight: 700;
+    }
+
+    .cryptoCell.target{
+      outline: 2px solid var(--accent);
+      outline-offset: 1px;
+    }
+
+    .cryptoMatrixSide{
+      display:grid;
+      gap: 10px;
+    }
+
+    @media (max-width: 980px){
+      .cryptoGrid{grid-template-columns: 1fr;}
+      .cryptoFlow{grid-template-columns: 1fr 1fr;}
+      .cryptoMatrixBody{grid-template-columns: 1fr;}
+    }
+
+    @media (max-width: 640px){
+      .cryptoFlow{grid-template-columns: 1fr;}
+    }
+
     .toast{
       position: fixed;
       right: 18px;
@@ -307,6 +499,86 @@
       </div>
     </div>
   </main>
+
+  <section class="cryptoSection">
+    <div class="wrap">
+      <div class="cryptoHeader">
+        <div>
+          <h2 class="cryptoTitle">Encrypted Battleship (MPC Preview)</h2>
+          <p class="cryptoSubtitle">A lightweight visual of the "Poker Over the Telephone" idea applied to grid targets.</p>
+        </div>
+        <span class="tag">NO SERVER</span>
+      </div>
+
+      <div class="cryptoGrid">
+        <div class="cryptoCard">
+          <h3>Concept</h3>
+          <p>Each grid cell is treated like a sealed box. You never reveal ship locations, only whether a target hits.</p>
+          <ul class="cryptoList">
+            <li>Matrix A: ships (0 or n)</li>
+            <li>Matrix B: random noise mod p</li>
+            <li>Matrix C = A + B</li>
+            <li>Matrix D = C^alpha (mod p)</li>
+          </ul>
+        </div>
+        <div class="cryptoCard">
+          <h3>Target Check</h3>
+          <p>The attacker chooses one encrypted cell, adds their lock, and the defender removes theirs.</p>
+          <div class="cryptoMono">e = d^beta mod p&#10;f = e^alpha_inv mod p&#10;g = f^beta_inv mod p</div>
+        </div>
+        <div class="cryptoCard">
+          <h3>Truth Without Trust</h3>
+          <p>Both players can verify hits and detect cheating without a trusted server.</p>
+          <ul class="cryptoList">
+            <li>Ship count proves legal placement</li>
+            <li>Locks prevent board tampering mid-game</li>
+            <li>Discrete logs keep positions hidden</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="cryptoFlow">
+        <div class="cryptoStep">
+          <strong>1. Place</strong>
+          Build Matrix A from your ships.
+        </div>
+        <div class="cryptoStep">
+          <strong>2. Mask</strong>
+          Add Matrix B and encrypt to Matrix D.
+        </div>
+        <div class="cryptoStep">
+          <strong>3. Target</strong>
+          Opponent locks a single cell.
+        </div>
+        <div class="cryptoStep">
+          <strong>4. Reveal</strong>
+          Unlock to learn hit or miss.
+        </div>
+      </div>
+
+      <div class="cryptoMatrix">
+        <div class="cryptoMatrixHeader">
+          <div>
+            <h3 class="cryptoMatrixTitle">Live 10x10 Matrix View</h3>
+            <div class="cryptoMatrixSub">Click a cell to target. Step through A -> B -> C -> D -> Unlock.</div>
+          </div>
+          <div class="cryptoControls">
+            <button id="cryptoPrev">Prev</button>
+            <button id="cryptoNext">Next</button>
+            <button id="cryptoRun" class="primary">Run</button>
+            <button id="cryptoReset">Refresh</button>
+          </div>
+        </div>
+        <div class="cryptoMatrixBody">
+          <div id="cryptoGrid" class="cryptoGridTable" aria-label="Encryption matrix grid"></div>
+          <div class="cryptoMatrixSide">
+            <div id="cryptoStepText" class="cryptoMono">Step: Matrix A (ships only).</div>
+            <div id="cryptoTargetText" class="cryptoMono">Target: click a cell to inspect encryption.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
@@ -1298,6 +1570,206 @@
     }
 
     window.addEventListener('resize', onResize);
+
+    // --- Crypto demo (visual only) ---
+
+    const cryptoDemo = {
+      p: 10007n,
+      n: 3n,
+      stepIndex: 0,
+      running: false,
+      timer: null,
+      target: {r: 0, c: 0},
+      needsSync: true,
+      A: null,
+      B: null,
+      C: null,
+      D: null,
+      alpha: null,
+      beta: null,
+      alphaInv: null,
+      betaInv: null,
+    };
+
+    const cryptoSteps = [
+      {key:'A', label:'Matrix A (ships: 0 or n)'},
+      {key:'B', label:'Matrix B (random mod p)'},
+      {key:'C', label:'Matrix C = A + B (mod p)'},
+      {key:'D', label:'Matrix D = C^alpha (mod p)'},
+      {key:'T', label:'Target unlock (hit or miss)'},
+    ];
+
+    function modPow(base, exp, mod){
+      let result = 1n;
+      let b = base % mod;
+      let e = exp;
+      while(e > 0n){
+        if(e & 1n) result = (result * b) % mod;
+        b = (b * b) % mod;
+        e >>= 1n;
+      }
+      return result;
+    }
+
+    function egcd(a, b){
+      if(b === 0n) return [a, 1n, 0n];
+      const [g, x, y] = egcd(b, a % b);
+      return [g, y, x - (a / b) * y];
+    }
+
+    function modInv(a, m){
+      const [g, x] = egcd(a, m);
+      if(g !== 1n) return null;
+      return (x % m + m) % m;
+    }
+
+    function randomInt(max){
+      return Math.floor(Math.random() * max);
+    }
+
+    function randomCoprime(mod){
+      const m = Number(mod);
+      let x = 0;
+      while(x < 2 || gcd(x, m) !== 1){
+        x = 2 + randomInt(m - 3);
+      }
+      return BigInt(x);
+    }
+
+    function gcd(a, b){
+      let x = a;
+      let y = b;
+      while(y !== 0){
+        const t = x % y;
+        x = y;
+        y = t;
+      }
+      return x;
+    }
+
+    function buildMatrixA(){
+      const A = Array.from({length: SIZE}, (_, r)=>
+        Array.from({length: SIZE}, (_, c)=>
+          state.myGrid[r][c] ? cryptoDemo.n : 0n
+        )
+      );
+      return A;
+    }
+
+    function buildMatrixB(){
+      const max = Number(cryptoDemo.p);
+      return Array.from({length: SIZE}, ()=>
+        Array.from({length: SIZE}, ()=>
+          BigInt(2 + randomInt(max - 3))
+        )
+      );
+    }
+
+    function addModMatrix(A, B, mod){
+      return A.map((row, r)=>row.map((v, c)=>(v + B[r][c]) % mod));
+    }
+
+    function powModMatrix(M, exp, mod){
+      return M.map(row=>row.map(v=>modPow(v, exp, mod)));
+    }
+
+    function syncCryptoDemo(){
+      cryptoDemo.A = buildMatrixA();
+      cryptoDemo.B = buildMatrixB();
+      cryptoDemo.C = addModMatrix(cryptoDemo.A, cryptoDemo.B, cryptoDemo.p);
+      cryptoDemo.alpha = randomCoprime(cryptoDemo.p - 1n);
+      cryptoDemo.beta = randomCoprime(cryptoDemo.p - 1n);
+      cryptoDemo.alphaInv = modInv(cryptoDemo.alpha, cryptoDemo.p - 1n);
+      cryptoDemo.betaInv = modInv(cryptoDemo.beta, cryptoDemo.p - 1n);
+      cryptoDemo.D = powModMatrix(cryptoDemo.C, cryptoDemo.alpha, cryptoDemo.p);
+      cryptoDemo.needsSync = false;
+      renderCryptoDemo();
+    }
+
+    function formatVal(v){
+      if(typeof v === 'bigint') return v.toString();
+      return String(v);
+    }
+
+    function getStepMatrix(stepKey){
+      if(stepKey === 'A') return cryptoDemo.A;
+      if(stepKey === 'B') return cryptoDemo.B;
+      if(stepKey === 'C') return cryptoDemo.C;
+      if(stepKey === 'D' || stepKey === 'T') return cryptoDemo.D;
+      return cryptoDemo.A;
+    }
+
+    function renderCryptoDemo(){
+      const gridEl = document.getElementById('cryptoGrid');
+      const stepEl = document.getElementById('cryptoStepText');
+      const targetEl = document.getElementById('cryptoTargetText');
+      if(!gridEl || !stepEl || !targetEl) return;
+      if(cryptoDemo.needsSync) syncCryptoDemo();
+
+      const step = cryptoSteps[cryptoDemo.stepIndex];
+      const M = getStepMatrix(step.key);
+      gridEl.innerHTML = '';
+
+      for(let r=0; r<SIZE; r++){
+        for(let c=0; c<SIZE; c++){
+          const cell = document.createElement('div');
+          cell.className = 'cryptoCell';
+          if(step.key === 'A' && cryptoDemo.A[r][c] !== 0n) cell.classList.add('ship');
+          if(cryptoDemo.target.r === r && cryptoDemo.target.c === c) cell.classList.add('target');
+          cell.textContent = formatVal(M[r][c]);
+          cell.addEventListener('click', ()=>{
+            cryptoDemo.target = {r, c};
+            renderCryptoDemo();
+          });
+          gridEl.appendChild(cell);
+        }
+      }
+
+      stepEl.textContent = `Step: ${step.label}`;
+
+      const r = cryptoDemo.target.r;
+      const c = cryptoDemo.target.c;
+      const a = cryptoDemo.A[r][c];
+      const b = cryptoDemo.B[r][c];
+      const d = cryptoDemo.D[r][c];
+      const e = modPow(d, cryptoDemo.beta, cryptoDemo.p);
+      const f = modPow(e, cryptoDemo.alphaInv, cryptoDemo.p);
+      const g = modPow(f, cryptoDemo.betaInv, cryptoDemo.p);
+      const hit = (g - b + cryptoDemo.p) % cryptoDemo.p;
+      const result = hit === cryptoDemo.n ? 'hit' : 'miss';
+
+      targetEl.textContent =
+        `Target (${r},${c})` +
+        ` | A=${a} B=${b} D=${d}\n` +
+        `e=d^beta mod p, f=e^alphaInv mod p, g=f^betaInv mod p\n` +
+        `g - B mod p = ${hit} -> ${result}`;
+    }
+
+    function stepCrypto(delta){
+      cryptoDemo.stepIndex = (cryptoDemo.stepIndex + delta + cryptoSteps.length) % cryptoSteps.length;
+      renderCryptoDemo();
+    }
+
+    function runCrypto(){
+      if(cryptoDemo.running){
+        cryptoDemo.running = false;
+        clearInterval(cryptoDemo.timer);
+        cryptoDemo.timer = null;
+        return;
+      }
+      cryptoDemo.running = true;
+      cryptoDemo.timer = setInterval(()=>stepCrypto(1), 1200);
+    }
+
+    document.addEventListener('click', (e)=>{
+      if(e.target && e.target.id === 'cryptoPrev') stepCrypto(-1);
+      if(e.target && e.target.id === 'cryptoNext') stepCrypto(1);
+      if(e.target && e.target.id === 'cryptoRun') runCrypto();
+      if(e.target && e.target.id === 'cryptoReset'){
+        cryptoDemo.needsSync = true;
+        renderCryptoDemo();
+      }
+    });
 
     // Init
     onResize();
