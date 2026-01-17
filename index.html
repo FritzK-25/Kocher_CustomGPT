@@ -2,295 +2,1303 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Fritz's big DSAIL final project — Flappy</title>
-  <meta name="description" content="Fritz's DSAIL final project: a Flappy Bird–style game, single-file for GitHub Pages." />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Merriweather:wght@700&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Harvard-style Battleship</title>
+  <!-- Open-source font pairing (official HBS Graphik is licensed; this is a close, web-safe substitute) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lora:wght@500;600;700&display=swap" rel="stylesheet">
   <style>
-    /* HBS-inspired tokens */
     :root{
-      --bg:#ffffff;
-      --surface:#fbfbfc;
-      --text:#071226;
-      --muted:#5b6776;
-      --crimson:#A51C30;
-      --crimson-dark:#82121f;
-      --accent:#6ee7b7;
-      --accent2:#60a5fa;
-      --card-shadow: 0 12px 36px rgba(2,6,23,0.06);
-      --radius:14px;
-      font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Arial;
+      /* Harvard / HBS palette anchors */
+      --crimson:#A41034; /* HBS “Harvard Crimson” */
+      --black:#0B0B0C;
+      --ink:#1A1A1A;
+      --paper:#FFFFFF;
+      --mist:#F6F6F7;
+      --line:#E6E6E8;
+      --success:#0F6A3B;
+      --danger:#B40021;
+      --accent:#3B2883;
+      --shadow: 0 10px 30px rgba(0,0,0,.10);
+      --radius: 18px;
     }
-    *{box-sizing:border-box}
-    html,body{height:100%;margin:0;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased}
-    a{color:var(--crimson)}
 
-    /* Layout */
-    .wrap{min-height:100%;display:flex;align-items:center;justify-content:center;padding:28px}
-    .shell{width:min(1100px,100%);display:grid;grid-template-columns:1fr 360px;gap:20px;align-items:start}
+    *{box-sizing:border-box;}
+    html,body{height:100%;}
+    body{
+      margin:0;
+      background: radial-gradient(1200px 700px at 20% 0%, rgba(164,16,52,.09), transparent 60%),
+                  radial-gradient(900px 600px at 90% 20%, rgba(59,40,131,.10), transparent 60%),
+                  var(--paper);
+      color:var(--ink);
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      line-height:1.35;
+    }
 
-    /* Panels */
-    .panel{background:var(--surface);border-radius:var(--radius);box-shadow:var(--card-shadow);border:1px solid rgba(2,6,23,0.04);overflow:hidden}
+    header{
+      background: linear-gradient(90deg, var(--crimson), #7D0C25);
+      color: var(--paper);
+      padding: 18px 18px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      box-shadow: 0 6px 18px rgba(0,0,0,.15);
+    }
 
-    /* Header above game */
-    .topbar{display:flex;align-items:center;justify-content:space-between;padding:18px 22px}
-    .brand{display:flex;gap:14px;align-items:center}
-    .brand img{height:40px}
-    .brand .title{font-family:'Merriweather', serif;font-weight:700;color:var(--crimson-dark);font-size:18px}
-    .brand .sub{font-size:12px;color:var(--muted)}
+    .wrap{max-width: 1120px; margin: 0 auto;}
 
-    .projectLabel{display:flex;flex-direction:column;align-items:flex-end}
-    .projectLabel .pName{font-weight:800;color:var(--text);letter-spacing:0.2px}
-    .projectLabel .pTag{font-size:12px;color:var(--muted)}
+    .brand{
+      display:flex; align-items:center; gap:14px;
+    }
 
-    /* Game header inside panel */
-    .gameHeader{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border-bottom:1px solid rgba(2,6,23,0.04)}
-    .titleSmall{display:flex;flex-direction:column}
-    .titleSmall .h{font-weight:800;font-family:'Merriweather',serif;color:var(--crimson-dark)}
-    .titleSmall .sub{font-size:12px;color:var(--muted)}
+    .shield{
+      width:40px; height:40px; border-radius: 12px;
+      background: rgba(255,255,255,.16);
+      border: 1px solid rgba(255,255,255,.25);
+      display:grid; place-items:center;
+      font-weight:800;
+      font-family: Inter, system-ui;
+      letter-spacing:.02em;
+      user-select:none;
+    }
 
-    .hdrRight{display:flex;gap:10px;align-items:center}
-    .pill{font-size:13px;padding:7px 12px;border-radius:999px;background:transparent;border:1px solid rgba(2,6,23,0.04);color:var(--muted);font-weight:700}
-    .pill strong{color:var(--text)}
+    .titleblock{display:flex; flex-direction:column;}
+    .title{
+      font-family: Lora, Georgia, serif;
+      font-weight: 700;
+      font-size: 20px;
+      letter-spacing:.01em;
+      margin:0;
+      line-height:1.15;
+    }
+    .subtitle{opacity:.92; font-size: 13px; margin-top: 2px;}
 
-    .btn{cursor:pointer;border:none;border-radius:10px;padding:9px 12px;background:var(--crimson);color:#fff;font-weight:700}
-    .btn.secondary{background:transparent;border:1px solid rgba(2,6,23,0.06);color:var(--crimson);font-weight:700}
+    main{padding: 22px 18px 44px;}
 
-    .gameBody{padding:18px}
+    .grid{
+      display:grid;
+      grid-template-columns: 1.2fr .9fr;
+      gap: 18px;
+      align-items:start;
+    }
 
-    /* canvas styling — keep colorful game area but inside HBS card */
-    canvas{width:100%;height:auto;display:block;border-radius:10px;background:linear-gradient(180deg,#a7e8ff 0%, #7fd3ff 36%, #9ee7c8 37%, #6ee7b7 100%);border:1px solid rgba(2,6,23,0.04)}
+    @media (max-width: 980px){
+      .grid{grid-template-columns: 1fr;}
+    }
 
-    /* overlay */
-    .overlay{position:absolute;inset:18px;display:flex;align-items:center;justify-content:center;pointer-events:none}
-    .card{max-width:520px;border-radius:12px;padding:16px;background:#071226;color:#fff;pointer-events:auto}
-    .card h2{margin:0 0 8px 0;font-family:'Merriweather',serif}
-    .card p{margin:0;color:rgba(255,255,255,0.9)}
-    .row{display:flex;gap:10px;align-items:center;justify-content:space-between;margin-top:12px}
-    .hint{font-size:13px;color:rgba(255,255,255,0.92);font-weight:700}
-    kbd{font-family:ui-monospace, SFMono-Regular, Menlo; padding:4px 8px;border-radius:8px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.08)}
+    .card{
+      background: rgba(255,255,255,.85);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
 
-    /* side panel */
-    .side{padding:18px;display:flex;flex-direction:column;gap:14px}
-    .box{background:transparent;border-radius:10px;padding:12px;border:1px solid rgba(2,6,23,0.04)}
-    .box h3{margin:0;color:var(--crimson-dark);font-family:'Merriweather',serif}
-    .meta{color:var(--muted);font-size:13px;margin-top:8px}
-    .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px}
-    .stat{padding:12px;border-radius:10px;background:linear-gradient(180deg, rgba(165,28,48,0.03), rgba(165,28,48,0.01));border:1px solid rgba(165,28,48,0.06);text-align:center}
-    .stat .n{font-weight:900;color:var(--crimson-dark);font-size:18px}
-    .stat .l{font-weight:700;color:var(--muted);font-size:12px;margin-top:6px}
+    .card h2{
+      margin:0;
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--line);
+      font-family: Lora, Georgia, serif;
+      font-size: 18px;
+      font-weight: 700;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+    }
 
-    .switch{display:flex;align-items:center;gap:10px;font-weight:700;color:var(--muted)}
-    .switch input{appearance:none;width:42px;height:24px;border-radius:999px;position:relative;background:rgba(2,6,23,0.06);border:1px solid rgba(2,6,23,0.06)}
-    .switch input::after{content:"";position:absolute;top:50%;left:4px;transform:translateY(-50%);width:18px;height:18px;border-radius:999px;background:#fff}
-    .switch input:checked{background:var(--crimson);border-color:var(--crimson)}
-    .switch input:checked::after{left:20px;background:#fff}
+    .tag{
+      font-family: Inter;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing:.08em;
+      text-transform: uppercase;
+      color: var(--crimson);
+      background: rgba(164,16,52,.08);
+      border: 1px solid rgba(164,16,52,.18);
+      padding: 6px 10px;
+      border-radius: 999px;
+      white-space:nowrap;
+    }
 
-    .footerNote{color:var(--muted);font-size:12px;margin-top:auto}
+    .content{padding: 16px 18px 18px;}
 
-    @media (max-width:980px){.shell{grid-template-columns:1fr}}
+    .row{display:flex; gap:12px; flex-wrap:wrap; align-items:center;}
+
+    button{
+      appearance:none;
+      border: 1px solid var(--line);
+      background: var(--paper);
+      color: var(--ink);
+      border-radius: 999px;
+      padding: 10px 14px;
+      font-weight: 700;
+      cursor:pointer;
+      transition: transform .08s ease, background .15s ease, border-color .15s ease;
+    }
+    button:hover{background: var(--mist);}
+    button:active{transform: translateY(1px);}
+
+    .primary{
+      background: var(--crimson);
+      border-color: rgba(0,0,0,.08);
+      color: var(--paper);
+    }
+    .primary:hover{background: #8E0E2B;}
+
+    .ghost{
+      background: transparent;
+      border-color: rgba(255,255,255,.35);
+      color: var(--paper);
+    }
+
+    .danger{
+      background: var(--danger);
+      border-color: rgba(0,0,0,.08);
+      color: var(--paper);
+    }
+
+    .muted{color: rgba(26,26,26,.72); font-size: 13px;}
+
+    .hud{
+      display:flex;
+      justify-content:space-between;
+      gap: 14px;
+      flex-wrap:wrap;
+      margin-top: 12px;
+    }
+
+    .pill{
+      border: 1px solid var(--line);
+      background: var(--mist);
+      border-radius: 999px;
+      padding: 9px 12px;
+      font-size: 13px;
+      display:flex;
+      gap: 8px;
+      align-items:center;
+      min-width: 180px;
+    }
+
+    .dot{width:10px; height:10px; border-radius: 999px; background: var(--accent);}
+    .dot.hit{background: var(--danger);} 
+    .dot.miss{background: #6B7280;}
+    .dot.ready{background: var(--success);} 
+
+    canvas{
+      width: 100%;
+      height: auto;
+      display:block;
+      background: linear-gradient(180deg, rgba(246,246,247,.9), rgba(255,255,255,.9));
+      border-radius: 16px;
+      border: 1px solid var(--line);
+    }
+
+    .kbd{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 12px;
+      border: 1px solid var(--line);
+      background: white;
+      padding: 3px 7px;
+      border-radius: 8px;
+    }
+
+    .footerNote{
+      margin-top: 12px;
+      font-size: 12px;
+      color: rgba(26,26,26,.65);
+    }
+
+    .toast{
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      max-width: 360px;
+      background: rgba(11,11,12,.92);
+      color: white;
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 14px;
+      padding: 12px 14px;
+      box-shadow: 0 18px 40px rgba(0,0,0,.25);
+      transform: translateY(30px);
+      opacity: 0;
+      pointer-events:none;
+      transition: transform .18s ease, opacity .18s ease;
+      font-size: 13px;
+    }
+    .toast.show{transform: translateY(0); opacity: 1;}
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="shell">
-
-      <!-- left: game + header -->
-      <div>
-        <div class="topbar panel" role="banner">
-          <div class="brand">
-            <!-- Placeholder HBS mark: replace with official SVG if you have it -->
-            <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='40' viewBox='0 0 320 80'><text x='6' y='60' font-family="Merriweather, serif" font-weight='700' font-size='64' fill='%23A51C30'>HBS</text></svg>" alt="HBS">
-            <div>
-              <div class="title">Harvard Business School</div>
-              <div class="sub">Data Science & AI Lab (DSAIL)</div>
-            </div>
-          </div>
-          <div class="projectLabel">
-            <div class="pName">Fritz's big DSAIL final project</div>
-            <div class="pTag">Flappy — single-file playable demo</div>
-          </div>
+  <header>
+    <div class="wrap" style="display:flex; align-items:center; justify-content:space-between; gap:12px;">
+      <div class="brand">
+        <div class="shield" aria-hidden="true">H</div>
+        <div class="titleblock">
+          <div class="title">Battleship</div>
+          <div class="subtitle">A Crimson Colored (single‑device version)</div>
         </div>
+      </div>
+      <div class="row">
+        <button id="btnReset" class="ghost" title="Reset and place ships again">Reset</button>
+      </div>
+    </div>
+  </header>
 
-        <section class="panel" aria-label="Flappy game">
-          <div class="gameHeader">
-            <div class="titleSmall">
-              <div class="h">Flappy — DSAIL Final Project</div>
-              <div class="sub">Press <kbd>Space</kbd> or tap/click to flap</div>
+  <main>
+    <div class="wrap">
+      <div class="grid">
+        <section class="card">
+          <h2>
+            <span>Game Board</span>
+            <span id="phaseTag" class="tag">PLACEMENT</span>
+          </h2>
+          <div class="content">
+            <canvas id="board" width="980" height="640" aria-label="Battleship board"></canvas>
+            <div class="hud">
+              <div class="pill"><span id="statusDot" class="dot"></span><span id="statusText">Drag ships onto your board. Right‑click to rotate.</span></div>
+              <div class="pill"><span class="dot hit"></span><span>Hit</span></div>
+              <div class="pill"><span class="dot miss"></span><span>Miss</span></div>
             </div>
-            <div class="hdrRight">
-              <div class="pill">Score: <strong id="score">0</strong></div>
-              <div class="pill">Best: <strong id="best">0</strong></div>
-              <button id="btnReset" class="btn secondary" title="Reset best score">Reset</button>
-            </div>
-          </div>
-
-          <div class="gameBody" style="position:relative">
-            <canvas id="game" width="900" height="540" aria-label="Game canvas"></canvas>
-
-            <div class="overlay" id="overlay">
-              <div class="card" id="overlayCard">
-                <h2 id="overlayTitle">Fritz's DSAIL Final Project</h2>
-                <p id="overlayText">A tiny playable Flappy Bird–style demo made as a DSAIL final project. Click/Tap or press <kbd>Space</kbd> to begin.</p>
-                <div class="row">
-                  <div class="hint">Tip: short taps beat long presses.</div>
-                  <button id="btnStart" class="btn">Start</button>
-                </div>
-              </div>
+            <div class="footerNote">
+              Controls: <span class="kbd">Drag</span> ships • <span class="kbd">Right‑click</span> rotate • <span class="kbd">R</span> rotate selected • <span class="kbd">Esc</span> deselect
             </div>
           </div>
         </section>
-      </div>
 
-      <!-- right: side info -->
-      <aside class="panel side" aria-label="Project info">
-        <div class="box">
-          <h3>About this project</h3>
-          <div class="meta">Built by Fritz for the Harvard Business School DSAIL course. Single-file HTML that runs entirely in your browser — ideal for quick demos and portfolio pieces.</div>
-        </div>
+        <aside class="card">
+          <h2>
+            <span>Actions</span>
+            <span class="tag" style="color:rgba(26,26,26,.78); background:rgba(26,26,26,.06); border-color:rgba(26,26,26,.12);">LOCAL PLAY</span>
+          </h2>
+          <div class="content">
+            <div class="row" style="margin-bottom:10px;">
+              <button id="btnReady" class="primary">Ready</button>
+              <button id="btnAuto" title="Automatically place your ships">Auto‑place</button>
+            </div>
+            <p class="muted" style="margin-top:0;">
+              This HTML version recreates the core of your Pygame UI: a 10×10 grid, draggable ships, rotation, a “Ready” transition,
+              and then a play phase where you click the opponent board to fire.
+              (Your original Python project’s networking + cryptography are not implemented here.)
+            </p>
 
-        <div class="box">
-          <h3>Stats</h3>
-          <div class="grid2">
-            <div class="stat"><div class="n" id="statGames">0</div><div class="l">Games</div></div>
-            <div class="stat"><div class="n" id="statAvg">0</div><div class="l">Avg Score</div></div>
+            <div class="card" style="box-shadow:none; border-radius: 16px; background: rgba(246,246,247,.9);">
+              <div class="content" style="padding:14px 14px 16px;">
+                <div style="font-weight:800; margin-bottom:10px;">Ship list</div>
+                <div id="shipList" class="muted"></div>
+              </div>
+            </div>
+
+            <div style="height:12px;"></div>
+
+            <div class="card" style="box-shadow:none; border-radius: 16px; background: rgba(246,246,247,.9);">
+              <div class="content" style="padding:14px 14px 16px;">
+                <div style="font-weight:800; margin-bottom:8px;">Gameplay</div>
+                <div class="muted">
+                  After you click <b>Ready</b>, the right board becomes the opponent.
+                  Click squares to fire. A simple AI fires back.
+                </div>
+              </div>
+            </div>
+
           </div>
-          <div class="meta" style="margin-top:10px">Scores are stored locally in your browser (LocalStorage).</div>
-        </div>
-
-        <div class="box">
-          <h3>Accessibility</h3>
-          <div class="meta">Reduced motion:</div>
-          <label class="switch" style="margin-top:8px"><span style="font-weight:700;color:var(--muted)">Reduced motion</span><input id="reducedMotion" type="checkbox" /></label>
-          <div class="meta" style="margin-top:8px">If enabled, background motion is reduced and particles are disabled.</div>
-        </div>
-
-        <div class="footerNote">Want the official HBS logo or fonts included? Upload the SVG/font files and I’ll wire them in. I can also add a downloadable zip with index.html if you want to hand this in.</div>
-      </aside>
-
+        </aside>
+      </div>
     </div>
-  </div>
+  </main>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
   <script>
-    (() => {
-      // ====== Utilities ======
-      const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
-      const rand = (a, b) => a + Math.random() * (b - a);
+    // --- Minimal Battleship implementation (single file, no build step) ---
 
-      // ====== Elements ======
-      const canvas = document.getElementById('game');
-      const ctx = canvas.getContext('2d');
-      const scoreEl = document.getElementById('score');
-      const bestEl  = document.getElementById('best');
-      const overlay = document.getElementById('overlay');
-      const overlayTitle = document.getElementById('overlayTitle');
-      const overlayText  = document.getElementById('overlayText');
-      const btnStart = document.getElementById('btnStart');
-      const btnReset = document.getElementById('btnReset');
+    const canvas = document.getElementById('board');
+    const ctx = canvas.getContext('2d');
 
-      const statGames = document.getElementById('statGames');
-      const statAvg = document.getElementById('statAvg');
-      const reducedMotionToggle = document.getElementById('reducedMotion');
+    // Layout constants (two boards shown side-by-side after Ready)
+    const UI = {
+      padding: 22,
+      headerH: 52,
+      gutter: 22,
+      panelW: 280,
+      labelW: 34,
+    };
 
-      // ====== LocalStorage ======
-      const LS_BEST = 'flappy_best_v1';
-      const LS_GAMES = 'flappy_games_v1';
-      const LS_TOTAL = 'flappy_total_v1';
-      const LS_RM = 'flappy_reduced_motion_v1';
+    const COLORS = {
+      crimson: getCss('--crimson'),
+      ink: getCss('--ink'),
+      black: getCss('--black'),
+      paper: getCss('--paper'),
+      line: getCss('--line'),
+      mist: getCss('--mist'),
+      accent: getCss('--accent'),
+      ship: '#111114',
+      shipEdge: '#2A2A2E',
+      peg: '#1E1E24',
+      hit: getCss('--danger'),
+      miss: '#FFFFFF',
+      oceanA: 'rgba(164,16,52,.10)',
+      oceanB: 'rgba(59,40,131,.08)',
+    };
 
-      let best = Number(localStorage.getItem(LS_BEST) || 0);
-      let games = Number(localStorage.getItem(LS_GAMES) || 0);
-      let totalScore = Number(localStorage.getItem(LS_TOTAL) || 0);
-      let reducedMotion = (localStorage.getItem(LS_RM) === '1');
+    function getCss(name){
+      return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+    }
 
-      bestEl.textContent = best;
-      statGames.textContent = games;
-      statAvg.textContent = games ? Math.round(totalScore / games) : 0;
-      reducedMotionToggle.checked = reducedMotion;
+    const phaseTag = document.getElementById('phaseTag');
+    const statusText = document.getElementById('statusText');
+    const statusDot = document.getElementById('statusDot');
+    const shipListEl = document.getElementById('shipList');
 
-      reducedMotionToggle.addEventListener('change', () => {
-        reducedMotion = reducedMotionToggle.checked;
-        localStorage.setItem(LS_RM, reducedMotion ? '1' : '0');
-      });
+    const btnReady = document.getElementById('btnReady');
+    const btnAuto = document.getElementById('btnAuto');
+    const btnReset = document.getElementById('btnReset');
 
-      btnReset.addEventListener('click', () => {
-        best = 0;
-        localStorage.setItem(LS_BEST, String(best));
-        bestEl.textContent = best;
-      });
+    const toastEl = document.getElementById('toast');
+    let toastTimer = null;
+    function toast(msg){
+      toastEl.textContent = msg;
+      toastEl.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(()=>toastEl.classList.remove('show'), 2400);
+    }
 
-      // ====== High-DPI crisp canvas ======
-      function resizeCanvas() {
-        const rect = canvas.getBoundingClientRect();
-        const dpr = Math.max(1, Math.floor(window.devicePixelRatio || 1));
-        const cssW = rect.width;
-        const cssH = rect.width * (540/900);
-        canvas.style.height = cssH + 'px';
+    // Game state
+    const SIZE = 10;
+    const SHIPS = [
+      { id:'carrier', name:'Carrier', len:5 },
+      { id:'battleship', name:'Battleship', len:4 },
+      { id:'cruiser', name:'Cruiser', len:3 },
+      { id:'submarine', name:'Submarine', len:3 },
+      { id:'destroyer', name:'Destroyer', len:2 },
+    ];
 
-        canvas.width  = Math.floor(cssW * dpr);
-        canvas.height = Math.floor(cssH * dpr);
+    function emptyGrid(){
+      return Array.from({length: SIZE}, ()=>Array.from({length: SIZE}, ()=>0));
+    }
 
-        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    function cloneGrid(g){
+      return g.map(row=>row.slice());
+    }
+
+    const state = {
+      phase: 'placement', // placement | play | over
+      myGrid: emptyGrid(),
+      opGrid: emptyGrid(),
+      myShots: new Set(),  // "r,c"
+      opShots: new Set(),
+      myHits: new Set(),
+      opHits: new Set(),
+      selectedShipId: null,
+      dragging: false,
+      dragOffset: {x:0, y:0},
+      // ships live either in bank (px coords) or on board (grid coords)
+      ships: [],
+      // UI-calculated rects
+      rects: {
+        myBoard: null,
+        opBoard: null,
+        bank: null,
+        readyBtn: null,
+      }
+    };
+
+    function resetGame(){
+      state.phase = 'placement';
+      state.myGrid = emptyGrid();
+      state.opGrid = emptyGrid();
+      state.myShots.clear();
+      state.opShots.clear();
+      state.myHits.clear();
+      state.opHits.clear();
+      state.selectedShipId = null;
+      state.dragging = false;
+
+      // Initial bank placement (similar to your Python variables.py)
+      state.ships = SHIPS.map((s, idx)=>({
+        ...s,
+        orientation: 'h',
+        placed: false,
+        // pixel positions (in bank) will be recalculated in layout()
+        px: 0,
+        py: 0,
+        // grid anchor when placed
+        r: 0,
+        c: 0,
+      }));
+
+      layout();
+      autoPlaceOpponent();
+      updateUI();
+      draw();
+    }
+
+    // --- Layout & drawing ---
+
+    function layout(){
+      const W = canvas.width;
+      const H = canvas.height;
+
+      const boardAreaW = W - UI.padding*2;
+      const boardAreaH = H - UI.padding*2;
+
+      // During placement: show one board + bank panel area on the right.
+      if(state.phase === 'placement'){
+        const boardW = Math.min(boardAreaH, boardAreaW - UI.panelW - UI.gutter);
+        const boardH = boardW;
+        const myX = UI.padding;
+        const myY = UI.padding + 6;
+
+        state.rects.myBoard = {x: myX, y: myY, w: boardW, h: boardH};
+        state.rects.opBoard = null;
+
+        const bankX = myX + boardW + UI.gutter;
+        const bankY = myY;
+        const bankW = UI.panelW;
+        const bankH = boardW;
+        state.rects.bank = {x: bankX, y: bankY, w: bankW, h: bankH};
+
+        // Arrange ships in bank
+        const pad = 16;
+        let y = bankY + 70;
+        for(const ship of state.ships){
+          if(!ship.placed){
+            ship.px = bankX + pad;
+            ship.py = y;
+            ship.orientation = 'h';
+            y += 56;
+          } else {
+            // keep pixel in sync with board placement
+            const cell = cellSize(state.rects.myBoard);
+            const origin = gridOrigin(state.rects.myBoard);
+            ship.px = origin.x + ship.c * cell;
+            ship.py = origin.y + ship.r * cell;
+          }
+        }
+      } else {
+        // Play/over: show two boards side by side
+        const totalW = boardAreaW - UI.gutter;
+        const singleW = Math.min((totalW / 2), boardAreaH);
+        const boardW = singleW;
+        const boardH = singleW;
+        const myX = UI.padding;
+        const myY = UI.padding + 6;
+        const opX = myX + boardW + UI.gutter;
+        const opY = myY;
+
+        state.rects.myBoard = {x: myX, y: myY, w: boardW, h: boardH};
+        state.rects.opBoard = {x: opX, y: opY, w: boardW, h: boardH};
+        state.rects.bank = null;
+
+        // keep ship pixel positions synced to my board
+        const cell = cellSize(state.rects.myBoard);
+        const origin = gridOrigin(state.rects.myBoard);
+        for(const ship of state.ships){
+          ship.px = origin.x + ship.c * cell;
+          ship.py = origin.y + ship.r * cell;
+        }
       }
 
-      window.addEventListener('resize', () => resizeCanvas());
+      renderShipList();
+    }
 
-      // ====== Game constants ======
-      const W = () => canvas.getBoundingClientRect().width;
-      const H = () => canvas.getBoundingClientRect().height;
+    function cellSize(rect){
+      const innerW = rect.w - UI.labelW;
+      const innerH = rect.h - UI.labelW;
+      return Math.floor(Math.min(innerW, innerH) / SIZE);
+    }
 
-      const gravity = 1800;
-      const flapVel = -520;
-      const pipeSpeed = 280;
-      const pipeWidth = 84;
-      const gapMin = 150;
-      const gapMax = 210;
-      const spawnEvery = 1.35;
+    function gridOrigin(rect){
+      return {x: rect.x + UI.labelW, y: rect.y + UI.labelW};
+    }
 
-      const bird = {x:0,y:0,vy:0,r:16,alive:true,rot:0};
+    function draw(){
+      ctx.clearRect(0,0,canvas.width, canvas.height);
 
-      let t = 0;
-      const clouds = Array.from({length:6}).map(()=>({x:rand(0,1200),y:rand(30,220),s:rand(0.55,1.15),w:rand(80,160)}));
+      // background wash
+      const bg = ctx.createLinearGradient(0,0,canvas.width, canvas.height);
+      bg.addColorStop(0, COLORS.oceanA);
+      bg.addColorStop(1, COLORS.oceanB);
+      ctx.fillStyle = bg;
+      ctx.fillRect(0,0,canvas.width, canvas.height);
 
-      let pipes = [];
-      let spawnTimer = 0;
-      let score = 0;
-      let state = 'ready';
-      let particles = [];
+      // Title strip
+      drawTopStrip();
 
-      function flap(){ if(state==='ready') startGame(); if(state!=='playing') return; bird.vy = flapVel; }
-      function startGame(){ state='playing'; overlay.style.display='none'; }
-      function showOverlay(kind){ overlay.style.display='flex'; if(kind==='ready'){ overlayTitle.textContent='Fritz\'s DSAIL Final Project'; overlayText.innerHTML=`A tiny playable Flappy Bird–style demo made as a DSAIL final project. Click/Tap or press <kbd>Space</kbd> to begin.`; btnStart.textContent='Start'; } else if(kind==='gameover'){ overlayTitle.textContent='Game Over'; overlayText.innerHTML=`Score: <strong>${score}</strong> — Best: <strong>${best}</strong><br/>Press <kbd>R</kbd> or click Restart to try again.`; btnStart.textContent='Restart'; } }
-      function resetRound(){ const w=W(), h=H(); bird.x=Math.max(120, w*0.22); bird.y=h*0.45; bird.vy=0; bird.alive=true; bird.rot=0; pipes=[]; particles=[]; spawnTimer=0; score=0; scoreEl.textContent=score; state='ready'; showOverlay('ready'); }
+      // Boards
+      drawBoard(state.rects.myBoard, 'Your Board', state.myGrid, true, state.opShots, state.opHits);
+      if(state.rects.opBoard){
+        drawBoard(state.rects.opBoard, 'Opponent', state.opGrid, false, state.myShots, state.myHits);
+      }
 
-      window.addEventListener('keydown',(e)=>{ const key=e.key.toLowerCase(); if(key===' '||key==='spacebar'){ e.preventDefault(); flap(); } else if(key==='r'){ e.preventDefault(); restart(); } else if(key==='enter'){ if(state!=='playing') startGame(); } });
-      canvas.addEventListener('pointerdown',(e)=>{ e.preventDefault(); flap(); });
-      btnStart.addEventListener('click',()=>{ if(state==='ready') startGame(); else restart(); });
-      function restart(){ if(state==='playing') return; resetRound(); startGame(); }
+      // Bank / instructions panel
+      if(state.rects.bank){
+        drawBank(state.rects.bank);
+      }
 
-      function spawnPipe(){ const w=W(), h=H(); const gap=rand(gapMin,gapMax); const margin=70; const center=rand(margin+gap/2, h-margin-gap/2); const topH=center-gap/2; const botY=center+gap/2; pipes.push({x:w+40,topH,botY,passed:false}); }
+      // Ships (on top)
+      if(state.phase === 'placement'){
+        drawShipsPlacement();
+      } else {
+        drawShipsOnMyBoard();
+      }
 
-      function circleRectCollide(cx,cy,r,rx,ry,rw,rh){ const closestX=clamp(cx,rx,rx+rw); const closestY=clamp(cy,ry,ry+rh); const dx=cx-closestX; const dy=cy-closestY; return (dx*dx+dy*dy)<=r*r; }
+      // End overlay
+      if(state.phase === 'over'){
+        drawGameOver();
+      }
+    }
 
-      function drawClouds(w,h){ ctx.save(); ctx.globalAlpha=0.14; for(const c of clouds){ const x=(c.x-(t*20*c.s))%(w+200); const px=x<-200?x+(w+200):x; const py=c.y; ctx.beginPath(); const cw=c.w; const ch=cw*0.42; ctx.ellipse(px,py,cw*0.5,ch*0.5,0,0,Math.PI*2); ctx.ellipse(px+cw*0.28,py-ch*0.2,cw*0.36,ch*0.36,0,0,Math.PI*2); ctx.ellipse(px-cw*0.26,py-ch*0.1,cw*0.38,ch*0.34,0,0,Math.PI*2); ctx.fillStyle="#0b1220"; ctx.fill(); } ctx.restore(); }
+    function drawTopStrip(){
+      const x = UI.padding;
+      const y = UI.padding - 2;
+      const w = canvas.width - UI.padding*2;
+      const h = 34;
+      roundRect(x,y,w,h,14);
+      ctx.fillStyle = 'rgba(255,255,255,.80)';
+      ctx.fill();
+      ctx.strokeStyle = COLORS.line;
+      ctx.stroke();
 
-      function drawGround(w,h){ const groundY=h*0.72; ctx.save(); ctx.fillStyle="rgba(12,16,23,0.06)"; ctx.fillRect(0,groundY,w,h-groundY); ctx.globalAlpha=0.06; for(let x=0;x<w;x+=30){ ctx.fillRect(x+((t*90)%30),groundY,10,h-groundY); } ctx.restore(); return groundY; }
+      ctx.fillStyle = COLORS.ink;
+      ctx.font = '700 13px Inter, system-ui';
+      ctx.fillText(
+        state.phase === 'placement'
+          ? 'Place ships on the grid (A–J / 0–9). Right-click or press R to rotate.'
+          : 'Fire on the opponent by clicking squares. First to 17 hits wins.',
+        x+14,
+        y+22
+      );
 
-      function drawPipes(w,h,groundY){ for(const p of pipes){ const x=p.x; ctx.fillStyle="rgba(165,28,48,0.14)"; ctx.fillRect(x,0,pipeWidth,p.topH); ctx.fillRect(x,p.botY,pipeWidth,groundY-p.botY); ctx.fillStyle="rgba(255,255,255,0.06)"; ctx.fillRect(x+10,0,10,p.topH); ctx.fillRect(x+10,p.botY,10,groundY-p.botY); ctx.fillStyle="rgba(2,6,23,0.08)"; ctx.fillRect(x-6,p.topH-16,pipeWidth+12,16); ctx.fillRect(x-6,p.botY,pipeWidth+12,16); ctx.strokeStyle="rgba(2,6,23,0.06)"; ctx.lineWidth=2; ctx.strokeRect(x,0,pipeWidth,p.topH); ctx.strokeRect(x,p.botY,pipeWidth,groundY-p.botY); } }
+      // small Harvard-ish accent line
+      ctx.fillStyle = COLORS.crimson;
+      ctx.fillRect(x+10, y+h-2, 120, 2);
+    }
 
-      function drawBird(){ const w=W(), h=H(); ctx.save(); ctx.translate(bird.x,bird.y); const targetRot=clamp(bird.vy/900,-0.55,0.75); bird.rot+=(targetRot-bird.rot)*0.12; ctx.rotate(bird.rot); ctx.beginPath(); ctx.arc(0,0,bird.r,0,Math.PI*2); ctx.fillStyle="#ffd166"; ctx.fill(); ctx.beginPath(); ctx.ellipse(-3,4,10,7,-0.2,0,Math.PI*2); ctx.fillStyle="rgba(255,255,255,0.45)"; ctx.fill(); ctx.beginPath(); ctx.arc(6,-5,4.2,0,Math.PI*2); ctx.fillStyle="#ffffff"; ctx.fill(); ctx.beginPath(); ctx.arc(7,-5,2.0,0,Math.PI*2); ctx.fillStyle="#0b1220"; ctx.fill(); ctx.beginPath(); ctx.moveTo(14,0); ctx.lineTo(24,4); ctx.lineTo(14,8); ctx.closePath(); ctx.fillStyle="#fb7185"; ctx.fill(); ctx.restore(); }
+    function drawBoard(rect, title, grid, showShips, shotsSet, hitsSet){
+      // Outer card
+      roundRect(rect.x, rect.y, rect.w, rect.h, 18);
+      ctx.fillStyle = 'rgba(255,255,255,.86)';
+      ctx.fill();
+      ctx.strokeStyle = COLORS.line;
+      ctx.stroke();
 
-      function spawnScoreParticles(){ if(reducedMotion) return; for(let i=0;i<18;i++){ particles.push({x:bird.x+rand(-6,6),y:bird.y+rand(-6,6),vx:rand(-110,110),vy:rand(-220,-40),life:rand(0.35,0.7)}); } }
-      function drawParticles(dt){ if(particles.length===0) return; ctx.save(); for(const pt of particles){ pt.life-=dt; pt.vy+=900*dt; pt.x+=pt.vx*dt; pt.y+=pt.vy*dt; ctx.globalAlpha=clamp(pt.life*1.4,0,1); ctx.fillStyle="rgba(165,28,48,0.9)"; ctx.fillRect(pt.x,pt.y,3,3); } ctx.restore(); particles=particles.filter(p=>p.life>0); }
+      // Title
+      ctx.fillStyle = COLORS.ink;
+      ctx.font = '700 16px Lora, Georgia, serif';
+      ctx.fillText(title, rect.x+14, rect.y+24);
 
-      function drawHUD(w,h){ ctx.save(); ctx.globalAlpha=0.12; const grd=ctx.createRadialGradient(w*0.5,h*0.18,20,w*0.5,h*0.18,h*0.9); grd.addColorStop(0,'rgba(0,0,0,0)'); grd.addColorStop(1,'rgba(0,0,0,0.55)'); ctx.fillStyle=grd; ctx.fillRect(0,0,w,h); ctx.restore(); if(state==='ready'){ ctx.save(); ctx.globalAlpha=0.9; ctx.fillStyle='rgba(2,6,23,0.9)'; ctx.font='700 18px system-ui, -apple-system, Segoe UI, Roboto, Arial'; ctx.textAlign='center'; ctx.fillText('Click / Tap / Space to start', w/2, h*0.40); ctx.restore(); } }
+      const cell = cellSize(rect);
+      const origin = gridOrigin(rect);
 
-      let last = performance.now();
-      function step(now){ const dt=Math.min(0.033,(now-last)/1000); last=now; resizeCanvas(); const w=W(), h=H(); t+=dt; ctx.clearRect(0,0,w,h); if(!reducedMotion) drawClouds(w,h); const groundY=drawGround(w,h); if(state==='playing'){ spawnTimer+=dt; if(spawnTimer>=spawnEvery){ spawnTimer-=spawnEvery; spawnPipe(); } } for(const p of pipes){ if(state==='playing') p.x-=pipeSpeed*dt; } pipes=pipes.filter(p=>p.x>-pipeWidth-80); drawPipes(w,h,groundY); if(state==='playing'){ bird.vy+=gravity*dt; bird.y+=bird.vy*dt; if(bird.y-bird.r<0){ bird.y=bird.r; bird.vy=0; } if(bird.y+bird.r>groundY){ bird.y=groundY-bird.r; bird.vy=0; bird.alive=false; } for(const p of pipes){ const topRect={x:p.x,y:0,w:pipeWidth,h:p.topH}; const botRect={x:p.x,y:p.botY,w:pipeWidth,h:groundY-p.botY}; const hitTop=circleRectCollide(bird.x,bird.y,bird.r,topRect.x,topRect.y,topRect.w,topRect.h); const hitBot=circleRectCollide(bird.x,bird.y,bird.r,botRect.x,botRect.y,botRect.w,botRect.h); if(hitTop||hitBot){ bird.alive=false; break; } const pipeMid=p.x+pipeWidth/2; if(!p.passed && pipeMid<bird.x){ p.passed=true; score+=1; scoreEl.textContent=score; spawnScoreParticles(); } } if(!bird.alive){ state='gameover'; games+=1; totalScore+=score; best=Math.max(best,score); localStorage.setItem(LS_GAMES,String(games)); localStorage.setItem(LS_TOTAL,String(totalScore)); localStorage.setItem(LS_BEST,String(best)); bestEl.textContent=best; statGames.textContent=games; statAvg.textContent=games?Math.round(totalScore/games):0; showOverlay('gameover'); } } else { bird.y+=Math.sin(t*2.2)*(reducedMotion?0:0.55); } drawBird(); drawParticles(dt); drawHUD(w,h); requestAnimationFrame(step); }
+      // Labels background
+      ctx.fillStyle = 'rgba(26,26,26,.06)';
+      ctx.fillRect(rect.x+10, rect.y+40, rect.w-20, UI.labelW-6);
 
-      function init(){ resizeCanvas(); resetRound(); requestAnimationFrame(step); }
-      init();
-    })();
+      // Grid background
+      const gridX = origin.x;
+      const gridY = origin.y;
+      const gridW = cell*SIZE;
+      const gridH = cell*SIZE;
+
+      // subtle ocean
+      const g = ctx.createLinearGradient(gridX, gridY, gridX+gridW, gridY+gridH);
+      g.addColorStop(0, 'rgba(164,16,52,.06)');
+      g.addColorStop(1, 'rgba(59,40,131,.05)');
+      ctx.fillStyle = g;
+      ctx.fillRect(gridX, gridY, gridW, gridH);
+
+      // grid lines
+      ctx.strokeStyle = 'rgba(0,0,0,.10)';
+      ctx.lineWidth = 1;
+      for(let i=0;i<=SIZE;i++){
+        ctx.beginPath();
+        ctx.moveTo(gridX, gridY + i*cell);
+        ctx.lineTo(gridX + gridW, gridY + i*cell);
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.moveTo(gridX + i*cell, gridY);
+        ctx.lineTo(gridX + i*cell, gridY + gridH);
+        ctx.stroke();
+      }
+
+      // labels
+      ctx.fillStyle = 'rgba(26,26,26,.80)';
+      ctx.font = '700 13px Inter, system-ui';
+      for(let c=0;c<SIZE;c++){
+        ctx.fillText(String(c), gridX + c*cell + cell*0.40, rect.y + UI.labelW);
+      }
+      for(let r=0;r<SIZE;r++){
+        ctx.fillText(String.fromCharCode(65+r), rect.x + 14, gridY + r*cell + cell*0.68);
+      }
+
+      // cells: ships + hits/misses
+      for(let r=0;r<SIZE;r++){
+        for(let c=0;c<SIZE;c++){
+          const x = gridX + c*cell;
+          const y = gridY + r*cell;
+          const key = `${r},${c}`;
+
+          if(showShips && grid[r][c] === 1){
+            ctx.fillStyle = COLORS.ship;
+            ctx.fillRect(x+2, y+2, cell-4, cell-4);
+          }
+
+          if(shotsSet.has(key)){
+            const isHit = hitsSet.has(key);
+            if(isHit){
+              ctx.fillStyle = COLORS.hit;
+              ctx.fillRect(x+2, y+2, cell-4, cell-4);
+            } else {
+              ctx.fillStyle = COLORS.miss;
+              ctx.fillRect(x+2, y+2, cell-4, cell-4);
+            }
+            // peg
+            ctx.beginPath();
+            ctx.fillStyle = COLORS.peg;
+            ctx.arc(x + cell/2, y + cell/2, Math.max(3, cell*0.12), 0, Math.PI*2);
+            ctx.fill();
+          }
+        }
+      }
+
+      // border line for grid
+      ctx.strokeStyle = 'rgba(0,0,0,.18)';
+      ctx.strokeRect(gridX, gridY, gridW, gridH);
+    }
+
+    function drawBank(rect){
+      // Panel shell
+      roundRect(rect.x, rect.y, rect.w, rect.h, 18);
+      ctx.fillStyle = 'rgba(255,255,255,.90)';
+      ctx.fill();
+      ctx.strokeStyle = COLORS.line;
+      ctx.stroke();
+
+      // Header band
+      ctx.fillStyle = 'rgba(164,16,52,.10)';
+      roundRect(rect.x+12, rect.y+12, rect.w-24, 46, 14);
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(164,16,52,.18)';
+      ctx.stroke();
+
+      ctx.fillStyle = COLORS.crimson;
+      ctx.font = '800 14px Inter, system-ui';
+      ctx.fillText('Ships', rect.x+26, rect.y+41);
+
+      // Instructions
+      ctx.fillStyle = 'rgba(26,26,26,.72)';
+      ctx.font = '600 12px Inter, system-ui';
+      const lines = [
+        '• Drag ships onto the board',
+        '• Right-click to rotate',
+        '• Place all ships, then click Ready',
+      ];
+      let y = rect.y + 66;
+      for(const line of lines){
+        ctx.fillText(line, rect.x+18, y);
+        y += 18;
+      }
+
+      // Ready button (drawn on canvas for parity with Pygame UI)
+      const btnW = rect.w - 44;
+      const btnH = 72;
+      const btnX = rect.x + 22;
+      const btnY = rect.y + rect.h - btnH - 22;
+      state.rects.readyBtn = {x: btnX, y: btnY, w: btnW, h: btnH};
+
+      roundRect(btnX, btnY, btnW, btnH, 18);
+      ctx.fillStyle = COLORS.crimson;
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(0,0,0,.12)';
+      ctx.stroke();
+
+      ctx.fillStyle = 'rgba(255,255,255,.95)';
+      ctx.font = '800 26px Inter, system-ui';
+      ctx.fillText('Ready', btnX + 26, btnY + 44);
+
+      ctx.fillStyle = 'rgba(255,255,255,.82)';
+      ctx.font = '600 12px Inter, system-ui';
+      ctx.fillText('All ships must be on-board and not overlapping', btnX + 26, btnY + 62);
+
+      // small accent underline
+      ctx.fillStyle = 'rgba(255,255,255,.65)';
+      ctx.fillRect(btnX+26, btnY+48, 78, 2);
+    }
+
+    function drawShipsPlacement(){
+      // In placement phase, ships can be in bank or on board and draggable.
+      for(const ship of state.ships){
+        drawShipShape(ship, ship.id === state.selectedShipId);
+      }
+    }
+
+    function drawShipsOnMyBoard(){
+      // Ships are represented by filled cells already; draw subtle outlines to mimic Pygame capsules
+      const cell = cellSize(state.rects.myBoard);
+      const origin = gridOrigin(state.rects.myBoard);
+      for(const ship of state.ships){
+        const x = origin.x + ship.c*cell;
+        const y = origin.y + ship.r*cell;
+        const w = ship.orientation === 'h' ? ship.len*cell : cell;
+        const h = ship.orientation === 'h' ? cell : ship.len*cell;
+        ctx.save();
+        ctx.globalAlpha = 0.35;
+        ctx.strokeStyle = 'rgba(255,255,255,.60)';
+        ctx.lineWidth = 2;
+        roundRect(x+2, y+2, w-4, h-4, Math.max(10, cell*0.35));
+        ctx.stroke();
+        ctx.restore();
+      }
+    }
+
+    function drawShipShape(ship, selected){
+      // Draw a capsule-ish ship (rect + end caps + pips), matching your Pygame feel
+      const rect = state.rects.myBoard;
+      const cell = cellSize(rect);
+      const w = ship.orientation === 'h' ? ship.len*cell : cell;
+      const h = ship.orientation === 'h' ? cell : ship.len*cell;
+      const x = ship.px;
+      const y = ship.py;
+
+      ctx.save();
+      ctx.shadowColor = 'rgba(0,0,0,.22)';
+      ctx.shadowBlur = selected ? 18 : 10;
+      ctx.shadowOffsetY = 6;
+
+      // body
+      ctx.fillStyle = selected ? '#1B1B20' : COLORS.ship;
+      roundRect(x, y, w, h, Math.max(10, cell*0.35));
+      ctx.fill();
+
+      ctx.shadowBlur = 0;
+      ctx.strokeStyle = selected ? COLORS.crimson : COLORS.shipEdge;
+      ctx.lineWidth = selected ? 3 : 1;
+      roundRect(x, y, w, h, Math.max(10, cell*0.35));
+      ctx.stroke();
+
+      // pips
+      ctx.fillStyle = 'rgba(255,255,255,.18)';
+      for(let i=0;i<ship.len;i++){
+        const cx = ship.orientation === 'h' ? (x + (i+0.5)*cell) : (x + cell/2);
+        const cy = ship.orientation === 'h' ? (y + cell/2) : (y + (i+0.5)*cell);
+        ctx.beginPath();
+        ctx.arc(cx, cy, Math.max(3, cell*0.12), 0, Math.PI*2);
+        ctx.fill();
+      }
+
+      // label
+      ctx.fillStyle = 'rgba(255,255,255,.88)';
+      ctx.font = '700 12px Inter, system-ui';
+      ctx.fillText(ship.name, x + 10, y + 16);
+
+      ctx.restore();
+    }
+
+    function drawGameOver(){
+      ctx.save();
+      ctx.fillStyle = 'rgba(11,11,12,.62)';
+      ctx.fillRect(0,0,canvas.width, canvas.height);
+
+      const w = 520;
+      const h = 240;
+      const x = canvas.width/2 - w/2;
+      const y = canvas.height/2 - h/2;
+
+      roundRect(x,y,w,h,22);
+      ctx.fillStyle = 'rgba(255,255,255,.95)';
+      ctx.fill();
+      ctx.strokeStyle = COLORS.line;
+      ctx.stroke();
+
+      const youWin = state.opHits.size >= 17;
+      const title = youWin ? 'Congratulations' : 'Better luck next time';
+      const sub = youWin ? 'You sank all opponent ships.' : 'The opponent sank all your ships.';
+
+      ctx.fillStyle = COLORS.ink;
+      ctx.font = '800 28px Lora, Georgia, serif';
+      ctx.fillText(title, x+24, y+60);
+
+      ctx.fillStyle = 'rgba(26,26,26,.72)';
+      ctx.font = '600 14px Inter, system-ui';
+      ctx.fillText(sub, x+24, y+90);
+
+      // Buttons
+      const b1 = {x: x+24, y: y+h-74, w: 200, h: 48, label: 'Play again'};
+      const b2 = {x: x+24+216, y: y+h-74, w: 200, h: 48, label: 'Close overlay'};
+
+      state.rects.overPlay = b1;
+      state.rects.overClose = b2;
+
+      roundRect(b1.x,b1.y,b1.w,b1.h,999);
+      ctx.fillStyle = COLORS.crimson;
+      ctx.fill();
+      ctx.fillStyle = 'white';
+      ctx.font = '800 14px Inter, system-ui';
+      ctx.fillText(b1.label, b1.x+52, b1.y+30);
+
+      roundRect(b2.x,b2.y,b2.w,b2.h,999);
+      ctx.fillStyle = 'rgba(26,26,26,.08)';
+      ctx.fill();
+      ctx.strokeStyle = COLORS.line;
+      ctx.stroke();
+      ctx.fillStyle = COLORS.ink;
+      ctx.fillText(b2.label, b2.x+44, b2.y+30);
+
+      ctx.restore();
+    }
+
+    function roundRect(x,y,w,h,r){
+      ctx.beginPath();
+      const rr = Math.min(r, w/2, h/2);
+      ctx.moveTo(x+rr, y);
+      ctx.arcTo(x+w, y, x+w, y+h, rr);
+      ctx.arcTo(x+w, y+h, x, y+h, rr);
+      ctx.arcTo(x, y+h, x, y, rr);
+      ctx.arcTo(x, y, x+w, y, rr);
+      ctx.closePath();
+    }
+
+    // --- Ship placement logic ---
+
+    function shipBoundsOnBoard(ship){
+      const rect = state.rects.myBoard;
+      const cell = cellSize(rect);
+      const origin = gridOrigin(rect);
+      const w = ship.orientation === 'h' ? ship.len*cell : cell;
+      const h = ship.orientation === 'h' ? cell : ship.len*cell;
+      return {x: ship.px, y: ship.py, w, h, origin, cell};
+    }
+
+    function pointInRect(px,py, r){
+      return px>=r.x && px<=r.x+r.w && py>=r.y && py<=r.y+r.h;
+    }
+
+    function shipAtPoint(px,py){
+      // Top-most selection: iterate reverse
+      for(let i=state.ships.length-1; i>=0; i--){
+        const ship = state.ships[i];
+        const b = shipBoundsOnBoard(ship);
+        if(pointInRect(px,py,{x:b.x,y:b.y,w:b.w,h:b.h})) return ship;
+      }
+      return null;
+    }
+
+    function snapToGrid(ship){
+      // Similar to CorrectMove(): snap to nearest cell top-left within my board.
+      const rect = state.rects.myBoard;
+      const cell = cellSize(rect);
+      const origin = gridOrigin(rect);
+
+      // Compute tentative row/col
+      const cx = ship.px - origin.x;
+      const cy = ship.py - origin.y;
+
+      let c = Math.round(cx / cell);
+      let r = Math.round(cy / cell);
+
+      c = clamp(c, 0, SIZE-1);
+      r = clamp(r, 0, SIZE-1);
+
+      // Fit within bounds based on length & orientation
+      if(ship.orientation === 'h'){
+        c = clamp(c, 0, SIZE - ship.len);
+      } else {
+        r = clamp(r, 0, SIZE - ship.len);
+      }
+
+      ship.c = c;
+      ship.r = r;
+      ship.px = origin.x + c*cell;
+      ship.py = origin.y + r*cell;
+    }
+
+    function rebuildMyGridFromShips(){
+      state.myGrid = emptyGrid();
+      for(const ship of state.ships){
+        if(!ship.placed) continue;
+        for(let k=0;k<ship.len;k++){
+          const r = ship.orientation === 'h' ? ship.r : ship.r + k;
+          const c = ship.orientation === 'h' ? ship.c + k : ship.c;
+          state.myGrid[r][c] = 1;
+        }
+      }
+    }
+
+    function placementIsLegal(){
+      // All placed, on-board, no overlap
+      if(state.ships.some(s=>!s.placed)) return false;
+
+      // overlap check
+      const seen = new Set();
+      for(const ship of state.ships){
+        for(let k=0;k<ship.len;k++){
+          const r = ship.orientation === 'h' ? ship.r : ship.r + k;
+          const c = ship.orientation === 'h' ? ship.c + k : ship.c;
+          const key = `${r},${c}`;
+          if(seen.has(key)) return false;
+          seen.add(key);
+          if(r<0||r>=SIZE||c<0||c>=SIZE) return false;
+        }
+      }
+      return true;
+    }
+
+    function clamp(n, a, b){
+      return Math.max(a, Math.min(b, n));
+    }
+
+    // --- Opponent auto placement ---
+
+    function autoPlaceOpponent(){
+      state.opGrid = emptyGrid();
+      const placed = [];
+
+      for(const s of SHIPS){
+        let ok = false;
+        for(let tries=0; tries<200 && !ok; tries++){
+          const orientation = Math.random() < 0.5 ? 'h' : 'v';
+          const rMax = orientation === 'v' ? SIZE - s.len : SIZE - 1;
+          const cMax = orientation === 'h' ? SIZE - s.len : SIZE - 1;
+          const r = randInt(0, rMax);
+          const c = randInt(0, cMax);
+
+          const cells = [];
+          for(let k=0;k<s.len;k++){
+            const rr = orientation === 'h' ? r : r + k;
+            const cc = orientation === 'h' ? c + k : c;
+            cells.push([rr,cc]);
+          }
+          if(cells.some(([rr,cc])=> state.opGrid[rr][cc] === 1)) continue;
+
+          for(const [rr,cc] of cells) state.opGrid[rr][cc] = 1;
+          placed.push({...s, r, c, orientation});
+          ok = true;
+        }
+      }
+    }
+
+    function randInt(a,b){
+      return Math.floor(Math.random() * (b-a+1)) + a;
+    }
+
+    // --- Play logic ---
+
+    function fireAtOpponent(r,c){
+      const key = `${r},${c}`;
+      if(state.myShots.has(key)){
+        toast('You already fired there.');
+        return;
+      }
+      state.myShots.add(key);
+      if(state.opGrid[r][c] === 1){
+        state.myHits.add(key);
+        toast('Hit!');
+      } else {
+        toast('Miss.');
+      }
+
+      if(state.myHits.size >= 17){
+        state.phase = 'over';
+        updateUI();
+        layout();
+        draw();
+        return;
+      }
+
+      // AI fires back
+      setTimeout(aiFire, 420);
+    }
+
+    function aiFire(){
+      // simple random AI
+      let r,c,key;
+      for(let tries=0; tries<500; tries++){
+        r = randInt(0,SIZE-1);
+        c = randInt(0,SIZE-1);
+        key = `${r},${c}`;
+        if(!state.opShots.has(key)) break;
+      }
+      state.opShots.add(key);
+      if(state.myGrid[r][c] === 1){
+        state.opHits.add(key);
+        toast('Opponent hit your ship.');
+      } else {
+        toast('Opponent missed.');
+      }
+
+      if(state.opHits.size >= 17){
+        state.phase = 'over';
+      }
+      updateUI();
+      layout();
+      draw();
+    }
+
+    // --- UI wiring ---
+
+    function updateUI(){
+      phaseTag.textContent = state.phase.toUpperCase();
+      if(state.phase === 'placement'){
+        statusText.textContent = 'Drag ships onto your board. Right-click to rotate.';
+        statusDot.className = 'dot';
+        btnReady.disabled = false;
+        btnReady.textContent = 'Ready';
+      } else if(state.phase === 'play'){
+        statusText.textContent = 'Click the opponent board to fire.';
+        statusDot.className = 'dot ready';
+        btnReady.disabled = true;
+        btnReady.textContent = 'In play';
+      } else {
+        statusText.textContent = 'Game over.';
+        statusDot.className = 'dot';
+        btnReady.disabled = false;
+        btnReady.textContent = 'Ready';
+      }
+      renderShipList();
+    }
+
+    function renderShipList(){
+      const lines = state.ships.map(s=>{
+        const placed = s.placed ? `Placed at ${String.fromCharCode(65+s.r)}${s.c}` : 'Not placed';
+        return `• <b>${s.name}</b> (${s.len}) — ${placed}`;
+      });
+      shipListEl.innerHTML = lines.join('<br>');
+    }
+
+    btnAuto.addEventListener('click', ()=>{
+      if(state.phase !== 'placement') return;
+      autoPlacePlayer();
+      updateUI();
+      layout();
+      draw();
+      toast('Auto-placed your ships.');
+    });
+
+    function autoPlacePlayer(){
+      // place ships randomly into myGrid and update ship r/c/orientation
+      const grid = emptyGrid();
+      for(const ship of state.ships){
+        let ok = false;
+        for(let tries=0; tries<400 && !ok; tries++){
+          const orientation = Math.random() < 0.5 ? 'h' : 'v';
+          const rMax = orientation === 'v' ? SIZE - ship.len : SIZE - 1;
+          const cMax = orientation === 'h' ? SIZE - ship.len : SIZE - 1;
+          const r = randInt(0, rMax);
+          const c = randInt(0, cMax);
+          const cells = [];
+          for(let k=0;k<ship.len;k++){
+            const rr = orientation === 'h' ? r : r + k;
+            const cc = orientation === 'h' ? c + k : c;
+            cells.push([rr,cc]);
+          }
+          if(cells.some(([rr,cc])=>grid[rr][cc] === 1)) continue;
+          for(const [rr,cc] of cells) grid[rr][cc] = 1;
+          ship.placed = true;
+          ship.orientation = orientation;
+          ship.r = r;
+          ship.c = c;
+          ok = true;
+        }
+      }
+      state.myGrid = grid;
+    }
+
+    btnReady.addEventListener('click', ()=> attemptReady());
+
+    function attemptReady(){
+      if(state.phase !== 'placement') return;
+      rebuildMyGridFromShips();
+      if(!placementIsLegal()){
+        toast('All ships must be placed on-board with no overlap.');
+        return;
+      }
+      state.phase = 'play';
+      state.selectedShipId = null;
+      updateUI();
+      layout();
+      draw();
+      toast('Game started. Fire on the opponent.');
+    }
+
+    btnReset.addEventListener('click', ()=>{
+      resetGame();
+      toast('Reset. Place your ships again.');
+    });
+
+    // Canvas click handling
+    canvas.addEventListener('contextmenu', (e)=>{
+      e.preventDefault();
+      const p = canvasPoint(e);
+      if(state.phase !== 'placement') return;
+      const ship = shipAtPoint(p.x,p.y);
+      if(ship){
+        rotateShip(ship);
+        draw();
+      }
+    });
+
+    canvas.addEventListener('mousedown', (e)=>{
+      const p = canvasPoint(e);
+
+      // Game over overlay buttons
+      if(state.phase === 'over'){
+        const b1 = state.rects.overPlay;
+        const b2 = state.rects.overClose;
+        if(b1 && pointInRect(p.x,p.y,b1)){
+          resetGame();
+          return;
+        }
+        if(b2 && pointInRect(p.x,p.y,b2)){
+          // just hide overlay and keep state
+          state.phase = 'play';
+          updateUI();
+          layout();
+          draw();
+          return;
+        }
+      }
+
+      if(state.phase === 'placement'){
+        // Click Ready button drawn on canvas (parity with Python)
+        if(state.rects.readyBtn && pointInRect(p.x,p.y,state.rects.readyBtn)){
+          attemptReady();
+          return;
+        }
+
+        const ship = shipAtPoint(p.x,p.y);
+        if(ship){
+          state.selectedShipId = ship.id;
+          state.dragging = (e.button === 0);
+          state.dragOffset.x = ship.px - p.x;
+          state.dragOffset.y = ship.py - p.y;
+          draw();
+          return;
+        }
+        // click empty: deselect
+        state.selectedShipId = null;
+        draw();
+      }
+
+      if(state.phase === 'play'){
+        // Fire on opponent board
+        if(state.rects.opBoard){
+          const hit = pointToCell(state.rects.opBoard, p.x,p.y);
+          if(hit){
+            fireAtOpponent(hit.r, hit.c);
+            updateUI();
+            draw();
+          }
+        }
+      }
+    });
+
+    canvas.addEventListener('mousemove', (e)=>{
+      if(state.phase !== 'placement' || !state.dragging) return;
+      const ship = state.ships.find(s=>s.id===state.selectedShipId);
+      if(!ship) return;
+      const p = canvasPoint(e);
+      ship.px = p.x + state.dragOffset.x;
+      ship.py = p.y + state.dragOffset.y;
+      draw();
+    });
+
+    window.addEventListener('mouseup', ()=>{
+      if(state.phase !== 'placement' || !state.dragging) return;
+      state.dragging = false;
+      const ship = state.ships.find(s=>s.id===state.selectedShipId);
+      if(!ship) return;
+
+      // If dropped near the board, snap into grid and mark placed
+      const myRect = state.rects.myBoard;
+      const cell = cellSize(myRect);
+      const origin = gridOrigin(myRect);
+      const gridBox = {x: origin.x, y: origin.y, w: cell*SIZE, h: cell*SIZE};
+
+      const shipBox = shipBoundsOnBoard(ship);
+      const center = {x: shipBox.x + shipBox.w/2, y: shipBox.y + shipBox.h/2};
+
+      if(pointInRect(center.x, center.y, gridBox)){
+        ship.placed = true;
+        snapToGrid(ship);
+      } else {
+        // return to bank
+        ship.placed = false;
+      }
+
+      // Validate overlap visually (don’t block placement; Ready button enforces legality)
+      rebuildMyGridFromShips();
+      updateUI();
+      layout();
+      draw();
+    });
+
+    window.addEventListener('keydown', (e)=>{
+      if(state.phase !== 'placement') return;
+      if(e.key.toLowerCase() === 'r'){
+        const ship = state.ships.find(s=>s.id===state.selectedShipId);
+        if(ship){
+          rotateShip(ship);
+          draw();
+        }
+      }
+      if(e.key === 'Escape'){
+        state.selectedShipId = null;
+        draw();
+      }
+    });
+
+    function rotateShip(ship){
+      ship.orientation = (ship.orientation === 'h') ? 'v' : 'h';
+      if(ship.placed){
+        // re-snap to keep within bounds
+        snapToGrid(ship);
+        rebuildMyGridFromShips();
+      }
+      toast(`${ship.name} rotated.`);
+    }
+
+    function pointToCell(boardRect, px, py){
+      const cell = cellSize(boardRect);
+      const origin = gridOrigin(boardRect);
+      const gridBox = {x: origin.x, y: origin.y, w: cell*SIZE, h: cell*SIZE};
+      if(!pointInRect(px,py,gridBox)) return null;
+      const c = Math.floor((px - origin.x) / cell);
+      const r = Math.floor((py - origin.y) / cell);
+      if(r<0||r>=SIZE||c<0||c>=SIZE) return null;
+      return {r,c};
+    }
+
+    function canvasPoint(e){
+      const rect = canvas.getBoundingClientRect();
+      const scaleX = canvas.width / rect.width;
+      const scaleY = canvas.height / rect.height;
+      return {
+        x: (e.clientX - rect.left) * scaleX,
+        y: (e.clientY - rect.top) * scaleY,
+      };
+    }
+
+    // Resize handling: keep internal resolution stable, but redraw
+    function onResize(){
+      const maxW = Math.min(1100, window.innerWidth - 24);
+      const maxH = Math.min(720, window.innerHeight - 190);
+      const w = Math.max(820, Math.floor(maxW));
+      const h = Math.max(560, Math.floor(maxH));
+      canvas.width = w;
+      canvas.height = h;
+      layout();
+      draw();
+    }
+
+    window.addEventListener('resize', onResize);
+
+    // Init
+    onResize();
+    resetGame();
+
   </script>
 </body>
 </html>
